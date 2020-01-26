@@ -12,7 +12,7 @@ describe("ViewModel instance", function() {
 
   beforeEach(function() {
     this.checkStub = sinon.stub(ViewModel, "check");
-    return this.viewmodel = new ViewModel();
+    this.viewmodel = new ViewModel();
   });
 
   afterEach(() => sinon.restoreAll());
@@ -21,7 +21,7 @@ describe("ViewModel instance", function() {
     it("checks the arguments", function() {
       const obj = { name: 'A'};
       const vm = new ViewModel(obj);
-      return assert.isTrue(this.checkStub.calledWith('#constructor', obj));
+      assert.isTrue(this.checkStub.calledWith('#constructor', obj));
     });
 
     it("adds property as function", function() {
@@ -29,14 +29,14 @@ describe("ViewModel instance", function() {
       assert.isFunction(vm.name);
       assert.equal('A', vm.name());
       vm.name('B');
-      return assert.equal('B', vm.name());
+      assert.equal('B', vm.name());
     });
 
     it("adds properties in load object", function() {
       const obj = { name: "A" };
       const vm = new ViewModel({
         load: obj});
-      return assert.equal('A', vm.name());
+      assert.equal('A', vm.name());
     });
 
     it("adds properties in load array", function() {
@@ -44,14 +44,14 @@ describe("ViewModel instance", function() {
       const vm = new ViewModel({
         load: arr});
       assert.equal('A', vm.name());
-      return assert.equal(1, vm.age());
+      assert.equal(1, vm.age());
     });
 
     it("doesn't convert functions", function() {
       const f = function() {};
       const vm = new ViewModel({
         fun: f});
-      return assert.equal(f, vm.fun);
+      assert.equal(f, vm.fun);
     });
 
     describe("loading hooks direct", function() {
@@ -96,32 +96,32 @@ describe("ViewModel instance", function() {
         assert.equal(this.viewmodel.vmOnCreated[0](), 'onCreatedShare');
         assert.equal(this.viewmodel.vmOnCreated[1](), 'onCreatedMixin');
         assert.equal(this.viewmodel.vmOnCreated[2](), 'onCreatedLoad');
-        return assert.equal(this.viewmodel.vmOnCreated[3](), 'onCreatedBase');
+        assert.equal(this.viewmodel.vmOnCreated[3](), 'onCreatedBase');
       });
       it("adds hooks to onRendered", function() {
         assert.equal(this.viewmodel.vmOnRendered.length, 4);
         assert.equal(this.viewmodel.vmOnRendered[0](), 'onRenderedShare');
         assert.equal(this.viewmodel.vmOnRendered[1](), 'onRenderedMixin');
         assert.equal(this.viewmodel.vmOnRendered[2](), 'onRenderedLoad');
-        return assert.equal(this.viewmodel.vmOnRendered[3](), 'onRenderedBase');
+        assert.equal(this.viewmodel.vmOnRendered[3](), 'onRenderedBase');
       });
       it("adds hooks to onDestroyed", function() {
         assert.equal(this.viewmodel.vmOnDestroyed.length, 4);
         assert.equal(this.viewmodel.vmOnDestroyed[0](), 'onDestroyedShare');
         assert.equal(this.viewmodel.vmOnDestroyed[1](), 'onDestroyedMixin');
         assert.equal(this.viewmodel.vmOnDestroyed[2](), 'onDestroyedLoad');
-        return assert.equal(this.viewmodel.vmOnDestroyed[3](), 'onDestroyedBase');
+        assert.equal(this.viewmodel.vmOnDestroyed[3](), 'onDestroyedBase');
       });
-      return it("adds hooks to autorun", function() {
+      it("adds hooks to autorun", function() {
         assert.equal(this.viewmodel.vmAutorun.length, 4);
         assert.equal(this.viewmodel.vmAutorun[0](), 'autorunShare');
         assert.equal(this.viewmodel.vmAutorun[1](), 'autorunMixin');
         assert.equal(this.viewmodel.vmAutorun[2](), 'autorunLoad');
-        return assert.equal(this.viewmodel.vmAutorun[3](), 'autorunBase');
+        assert.equal(this.viewmodel.vmAutorun[3](), 'autorunBase');
       });
     });
 
-    return describe("loading hooks from array", function() {
+    describe("loading hooks from array", function() {
       beforeEach(function() {
         ViewModel.mixins = {};
         ViewModel.mixin({
@@ -160,28 +160,28 @@ describe("ViewModel instance", function() {
         assert.equal(this.viewmodel.vmOnCreated[0](), 'onCreatedShare');
         assert.equal(this.viewmodel.vmOnCreated[1](), 'onCreatedMixin');
         assert.equal(this.viewmodel.vmOnCreated[2](), 'onCreatedLoad');
-        return assert.equal(this.viewmodel.vmOnCreated[3](), 'onCreatedBase');
+        assert.equal(this.viewmodel.vmOnCreated[3](), 'onCreatedBase');
       });
       it("adds hooks to onRendered", function() {
         assert.equal(this.viewmodel.vmOnRendered.length, 4);
         assert.equal(this.viewmodel.vmOnRendered[0](), 'onRenderedShare');
         assert.equal(this.viewmodel.vmOnRendered[1](), 'onRenderedMixin');
         assert.equal(this.viewmodel.vmOnRendered[2](), 'onRenderedLoad');
-        return assert.equal(this.viewmodel.vmOnRendered[3](), 'onRenderedBase');
+        assert.equal(this.viewmodel.vmOnRendered[3](), 'onRenderedBase');
       });
       it("adds hooks to onDestroyed", function() {
         assert.equal(this.viewmodel.vmOnDestroyed.length, 4);
         assert.equal(this.viewmodel.vmOnDestroyed[0](), 'onDestroyedShare');
         assert.equal(this.viewmodel.vmOnDestroyed[1](), 'onDestroyedMixin');
         assert.equal(this.viewmodel.vmOnDestroyed[2](), 'onDestroyedLoad');
-        return assert.equal(this.viewmodel.vmOnDestroyed[3](), 'onDestroyedBase');
+        assert.equal(this.viewmodel.vmOnDestroyed[3](), 'onDestroyedBase');
       });
-      return it("adds hooks to autorun", function() {
+      it("adds hooks to autorun", function() {
         assert.equal(this.viewmodel.vmAutorun.length, 4);
         assert.equal(this.viewmodel.vmAutorun[0](), 'autorunShare');
         assert.equal(this.viewmodel.vmAutorun[1](), 'autorunMixin');
         assert.equal(this.viewmodel.vmAutorun[2](), 'autorunLoad');
-        return assert.equal(this.viewmodel.vmAutorun[3](), 'autorunBase');
+        assert.equal(this.viewmodel.vmAutorun[3](), 'autorunBase');
       });
     });
   });
@@ -202,7 +202,7 @@ describe("ViewModel instance", function() {
       });
 
       ViewModel.signals = {};
-      return ViewModel.signal({
+      ViewModel.signal({
         name: {
           name: {
             target: document,
@@ -222,7 +222,7 @@ describe("ViewModel instance", function() {
         share: 'name',
         signal: 'name'
       });
-      return assert.equal(vm.name(), "base");
+      assert.equal(vm.name(), "base");
     });
 
     it("loads from load 2nd to last", function() {
@@ -234,7 +234,7 @@ describe("ViewModel instance", function() {
         share: 'name',
         signal: 'name'
       });
-      return assert.equal(vm.name(), "load");
+      assert.equal(vm.name(), "load");
     });
 
     it("loads from mixin 3rd to last", function() {
@@ -243,7 +243,7 @@ describe("ViewModel instance", function() {
         share: 'name',
         signal: 'name'
       });
-      return assert.equal(vm.name(), "mixin");
+      assert.equal(vm.name(), "mixin");
     });
 
     it("loads from share 4th to last", function() {
@@ -251,21 +251,21 @@ describe("ViewModel instance", function() {
         share: 'name',
         signal: 'name'
       });
-      return assert.equal(vm.name(), "share");
+      assert.equal(vm.name(), "share");
     });
 
-    return it("loads from signal first", function() {
+    it("loads from signal first", function() {
       const vm = new ViewModel({
         signal: 'name'
       });
-      return assert.equal(_.keys(vm.name()).length, 0);
+      assert.equal(_.keys(vm.name()).length, 0);
     });
   });
 
   describe("#bind", function() {
 
     beforeEach(function() {
-      return this.bindSingleStub = sinon.stub(ViewModel, 'bindSingle');
+      this.bindSingleStub = sinon.stub(ViewModel, 'bindSingle');
     });
 
     it("calls bindSingle for each entry in bindObject", function() {
@@ -281,13 +281,13 @@ describe("ViewModel instance", function() {
       this.viewmodel.bind.call(vm, bindObject, 'templateInstance', 'element', bindings);
       assert.isTrue(this.bindSingleStub.calledTwice);
       assert.isTrue(this.bindSingleStub.calledWith('templateInstance', 'element', 'a', 1, bindObject, vm, bindings));
-      return assert.isTrue(this.bindSingleStub.calledWith('templateInstance', 'element', 'b', 2, bindObject, vm, bindings));
+      assert.isTrue(this.bindSingleStub.calledWith('templateInstance', 'element', 'b', 2, bindObject, vm, bindings));
     });
 
-    return it("returns undefined", function() {
+    it("returns undefined", function() {
       const bindObject = {};
       const ret = this.viewmodel.bind(bindObject, 'templateInstance', 'element', 'bindings');
-      return assert.isUndefined(ret);
+      assert.isUndefined(ret);
     });
   });
 
@@ -300,25 +300,25 @@ describe("ViewModel instance", function() {
 
     it("adds a property to the view model", function() {
       this.viewmodel.load({ name: 'Alan' });
-      return assert.equal('Alan', this.viewmodel.name());
+      assert.equal('Alan', this.viewmodel.name());
     });
 
     it("adds onRendered from an array", function() {
       const f = function() {};
       this.viewmodel.load([ {onRendered: f} ]);
-      return assert.equal(f, this.viewmodel.vmOnRendered[0]);
+      assert.equal(f, this.viewmodel.vmOnRendered[0]);
   });
 
     it("adds a properties from an array", function() {
       this.viewmodel.load([{ name: 'Alan' },{ two: 'Brito' }]);
       assert.equal('Alan', this.viewmodel.name());
-      return assert.equal('Brito', this.viewmodel.two());
+      assert.equal('Brito', this.viewmodel.two());
     });
 
     it("adds function to the view model", function() {
       const f = function() {};
       this.viewmodel.load({ fun: f });
-      return assert.equal(f, this.viewmodel.fun);
+      assert.equal(f, this.viewmodel.fun);
     });
 
     it("doesn't create a new property when extending the same name", function() {
@@ -326,7 +326,7 @@ describe("ViewModel instance", function() {
       const old = this.viewmodel.name;
       this.viewmodel.load({ name: 'Brito' });
       assert.equal('Brito', this.viewmodel.name());
-      return assert.equal(old, this.viewmodel.name);
+      assert.equal(old, this.viewmodel.name);
     });
 
     it("overwrite existing functions", function() {
@@ -336,29 +336,29 @@ describe("ViewModel instance", function() {
       const theNew = this.viewmodel.name;
       assert.equal('Brito', this.viewmodel.name());
       assert.equal(theNew, this.viewmodel.name);
-      return assert.notEqual(old, theNew);
+      assert.notEqual(old, theNew);
     });
 
     it("doesn't add events", function() {
       this.viewmodel.load({ events: { 'click one'() {} } });
-      return assert.equal(0, this.viewmodel.vmEvents.length);
+      assert.equal(0, this.viewmodel.vmEvents.length);
     });
 
     it("adds events", function() {
       this.viewmodel.load({ events: { 'click one'() {} } }, true);
-      return assert.equal(1, this.viewmodel.vmEvents.length);
+      assert.equal(1, this.viewmodel.vmEvents.length);
     });
 
-    return it("doesn't do anything with null and undefined", function() {
+    it("doesn't do anything with null and undefined", function() {
       this.viewmodel.load(undefined );
-      return this.viewmodel.load(null);
+      this.viewmodel.load(null);
     });
   });
 
   describe("#parent", function() {
 
     beforeEach(function() {
-      return this.viewmodel.templateInstance = {
+      this.viewmodel.templateInstance = {
         view: {
           parentView: {
             name: 'Template.A',
@@ -372,7 +372,7 @@ describe("ViewModel instance", function() {
 
     it("returns the view model of the parent template", function() {
       const parent = this.viewmodel.parent();
-      return assert.equal("X", parent);
+      assert.equal("X", parent);
     });
 
     it("returns the first view model up the chain", function() {
@@ -396,12 +396,12 @@ describe("ViewModel instance", function() {
         }
       };
       const parent = this.viewmodel.parent();
-      return assert.equal("Y", parent);
+      assert.equal("Y", parent);
     });
 
-    return it("checks the arguments", function() {
+    it("checks the arguments", function() {
       this.viewmodel.parent('X');
-      return assert.isTrue(this.checkStub.calledWith('#parent', 'X'));
+      assert.isTrue(this.checkStub.calledWith('#parent', 'X'));
     });
   });
 
@@ -426,7 +426,7 @@ describe("ViewModel instance", function() {
           }
         }
       });
-      return this.viewmodel.children().push({
+      this.viewmodel.children().push({
         age() { return 1; },
         templateInstance: {
           view: {
@@ -440,37 +440,37 @@ describe("ViewModel instance", function() {
       assert.equal(3, this.viewmodel.children().length);
       this.viewmodel.children().push("X");
       assert.equal(4, this.viewmodel.children().length);
-      return assert.equal("X", this.viewmodel.children()[3]);
+      assert.equal("X", this.viewmodel.children()[3]);
   });
 
     it("returns by template when passed a string", function() {
       const arr = this.viewmodel.children('A');
       assert.equal(2, arr.length);
       assert.equal(1, arr[0].age());
-      return assert.equal(1, arr[1].age());
+      assert.equal(1, arr[1].age());
     });
 
     it("returns array from a predicate", function() {
       const arr = this.viewmodel.children(vm => vm.age() === 2);
       assert.equal(1, arr.length);
-      return assert.equal("BB", arr[0].name());
+      assert.equal("BB", arr[0].name());
     });
 
     it("calls .depend", function() {
       const array = this.viewmodel.children();
       const spy = sinon.spy(array, 'depend');
       this.viewmodel.children();
-      return assert.isTrue(spy.called);
+      assert.isTrue(spy.called);
     });
 
     it("doesn't check without arguments", function() {
       this.viewmodel.children();
-      return assert.isFalse(this.checkStub.calledWith('#children'));
+      assert.isFalse(this.checkStub.calledWith('#children'));
     });
 
-    return it("checks with arguments", function() {
+    it("checks with arguments", function() {
       this.viewmodel.children('X');
-      return assert.isTrue(this.checkStub.calledWith('#children', 'X'));
+      assert.isTrue(this.checkStub.calledWith('#children', 'X'));
     });
   });
 
@@ -482,30 +482,32 @@ describe("ViewModel instance", function() {
           name: 'body'
         }
       };
-      return this.viewmodel.load({
+      this.viewmodel.load({
         name: 'A',
-        arr: ['A']});});
+        arr: ['A']});
+    });
 
     it("resets a string", function() {
       this.viewmodel.name('B');
       this.viewmodel.reset();
-      return assert.equal("A", this.viewmodel.name());
+      assert.equal("A", this.viewmodel.name());
     });
 
-    return it("resets an array", function() {
+    it("resets an array", function() {
       this.viewmodel.arr().push('B');
       this.viewmodel.reset();
       assert.equal(1, this.viewmodel.arr().length);
-      return assert.equal('A', this.viewmodel.arr()[0]);
+      assert.equal('A', this.viewmodel.arr()[0]);
   });
 });
 
   describe("#data", function() {
 
     beforeEach(function() {
-      return this.viewmodel.load({
+      this.viewmodel.load({
         name: 'A',
-        arr: ['B']});});
+        arr: ['B']});
+    });
 
     it("creates js object", function() {
       const obj = this.viewmodel.data();
@@ -513,7 +515,7 @@ describe("ViewModel instance", function() {
       assert.equal('B', obj.arr[0]);
     });
 
-    return it("only loads fields specified", function() {
+    it("only loads fields specified", function() {
       const obj = this.viewmodel.data(['name']);
       assert.equal('A', obj.name);
       assert.isUndefined(obj.arr);
@@ -530,7 +532,7 @@ describe("ViewModel instance", function() {
       });
     });
 
-    return it("loads js object", function() {
+    it("loads js object", function() {
       this.viewmodel.load({
         name: 'B',
         f() { return 'Y'; }
@@ -565,7 +567,7 @@ describe("ViewModel instance", function() {
     it("sub-mixin adds property to vm", function() {
       const vm = new ViewModel({
         mixin: 'glob'});
-      return assert.equal('X', vm.name());
+      assert.equal('X', vm.name());
     });
 
     it("sub-mixin adds sub-property to vm", function() {
@@ -574,20 +576,20 @@ describe("ViewModel instance", function() {
           scoped: 'glob'
         }
       });
-      return assert.equal('X', vm.scoped.name());
+      assert.equal('X', vm.scoped.name());
     });
 
     it("sub-mixin adds sub-property to vm prom", function() {
       const vm = new ViewModel({
         mixin: 'prom'});
-      return assert.equal('X', vm.scoped.name());
+      assert.equal('X', vm.scoped.name());
     });
 
     it("sub-mixin adds sub-property to vm bland", function() {
       const vm = new ViewModel({
         mixin: 'bland'});
       assert.equal('A', vm.address());
-      return assert.equal('X', vm.subGlob.name());
+      assert.equal('X', vm.subGlob.name());
     });
 
     it("sub-mixin adds sub-property to vm bland scoped", function() {
@@ -597,19 +599,19 @@ describe("ViewModel instance", function() {
         }
       });
       assert.equal('A', vm.scoped.address());
-      return assert.equal('X', vm.scoped.subGlob.name());
+      assert.equal('X', vm.scoped.subGlob.name());
     });
 
     it("adds property to vm", function() {
       const vm = new ViewModel({
         mixin: 'house'});
-      return assert.equal('A', vm.address());
+      assert.equal('A', vm.address());
     });
 
     it("adds property to vm from array", function() {
       const vm = new ViewModel({
         mixin: ['house']});
-      return assert.equal('A', vm.address());
+      assert.equal('A', vm.address());
     });
 
     it("doesn't share the property", function() {
@@ -619,7 +621,7 @@ describe("ViewModel instance", function() {
         mixin: 'house'});
       vm2.address('B');
       assert.equal('A', vm1.address());
-      return assert.equal('B', vm2.address());
+      assert.equal('B', vm2.address());
     });
 
     it("adds object to vm", function() {
@@ -628,7 +630,7 @@ describe("ViewModel instance", function() {
           location: 'house'
         }
       });
-      return assert.equal('A', vm.location.address());
+      assert.equal('A', vm.location.address());
     });
 
     it("adds array to vm", function() {
@@ -637,21 +639,21 @@ describe("ViewModel instance", function() {
           location: ['house', 'person']
         }});
       assert.equal('A', vm.location.address());
-      return assert.equal('X', vm.location.name());
+      assert.equal('X', vm.location.name());
     });
 
-    return it("adds mix to vm", function() {
+    it("adds mix to vm", function() {
       const vm = new ViewModel({
         mixin: [
           { location: 'house' },
           'person'
         ]});
       assert.equal('A', vm.location.address());
-      return assert.equal('X', vm.name());
+      assert.equal('X', vm.name());
     });
   });
 
-  return describe("share", function() {
+  describe("share", function() {
 
     beforeEach(() => ViewModel.share({
       house: {
@@ -665,13 +667,13 @@ describe("ViewModel instance", function() {
     it("adds property to vm", function() {
       const vm = new ViewModel({
         share: 'house'});
-      return assert.equal('A', vm.address());
+      assert.equal('A', vm.address());
     });
 
     it("adds property to vm from array", function() {
       const vm = new ViewModel({
         share: ['house']});
-      return assert.equal('A', vm.address());
+      assert.equal('A', vm.address());
     });
 
     it("adds object to vm", function() {
@@ -680,7 +682,7 @@ describe("ViewModel instance", function() {
           location: 'house'
         }
       });
-      return assert.equal('A', vm.location.address());
+      assert.equal('A', vm.location.address());
     });
 
     it("shares the property", function() {
@@ -691,7 +693,7 @@ describe("ViewModel instance", function() {
       vm2.address('B');
       assert.equal('B', vm1.address());
       assert.equal('B', vm2.address());
-      return assert.equal(vm1.address, vm1.address);
+      assert.equal(vm1.address, vm1.address);
     });
 
     it("adds array to vm", function() {
@@ -700,17 +702,17 @@ describe("ViewModel instance", function() {
           location: ['house', 'person']
         }});
       assert.equal('A', vm.location.address());
-      return assert.equal('X', vm.location.name());
+      assert.equal('X', vm.location.name());
     });
 
-    return it("adds mix to vm", function() {
+    it("adds mix to vm", function() {
       const vm = new ViewModel({
         share: [
           { location: 'house' },
           'person'
         ]});
       assert.equal('A', vm.location.address());
-      return assert.equal('X', vm.name());
+      assert.equal('X', vm.name());
     });
   });
 });

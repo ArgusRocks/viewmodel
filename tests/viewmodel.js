@@ -13,18 +13,18 @@ describe("ViewModel", function() {
   beforeEach(function() {
     this.checkStub = sinon.stub(ViewModel, "check");
     this.delay = ViewModel.delay;
-    return ViewModel.delay = (t, f) => f();
+    ViewModel.delay = (t, f) => f();
   });
 
   afterEach(function() {
     sinon.restoreAll();
-    return ViewModel.delay = this.delay;
+    ViewModel.delay = this.delay;
   });
 
   describe("@nextId", () => it("increments the numbers", function() {
     const a = ViewModel.nextId();
     const b = ViewModel.nextId();
-    return assert.equal(b, a + 1);
+    assert.equal(b, a + 1);
   }));
 
   describe("@reserved", () => it("has reserved words", () => assert.ok(ViewModel.reserved.vmId)));
@@ -33,7 +33,7 @@ describe("ViewModel", function() {
 
     it("returns a function", () => assert.isFunction(ViewModel.onDestroyed()));
 
-    return describe("return function", function() {
+    describe("return function", function() {
       beforeEach(function() {
         this.viewmodel = {
           vmId: 1,
@@ -55,7 +55,7 @@ describe("ViewModel", function() {
         ViewModel.byId = {};
         ViewModel.add(this.viewmodel);
         ViewModel.onDestroyed().call(this.instance);
-        return assert.isUndefined(ViewModel.byId[1]);
+        assert.isUndefined(ViewModel.byId[1]);
     });
 
       it("removes the view model from ViewModel.byTemplate", function() {
@@ -63,13 +63,13 @@ describe("ViewModel", function() {
         ViewModel.add(this.viewmodel);
         assert.ok(ViewModel.byTemplate['A'][1]);
         ViewModel.onDestroyed().call(this.instance);
-        return assert.isUndefined(ViewModel.byTemplate['A'][1]);
+        assert.isUndefined(ViewModel.byTemplate['A'][1]);
     });
 
-      return it("calls viewmodel.onDestroyed", function() {
+      it("calls viewmodel.onDestroyed", function() {
         let ran = false;
         this.instance.viewmodel = new ViewModel({
-          onDestroyed() { return ran = true; }});
+          onDestroyed() { ran = true; }});
 
         this.instance.viewmodel.templateInstance = {
           view: {
@@ -78,7 +78,7 @@ describe("ViewModel", function() {
         };
 
         ViewModel.onDestroyed({}).call(this.instance);
-        return assert.isTrue(ran);
+        assert.isTrue(ran);
       });
     });
   });
@@ -87,7 +87,7 @@ describe("ViewModel", function() {
 
     it("returns a function", () => assert.isFunction(ViewModel.onRendered()));
 
-    return describe("return function", function() {
+    describe("return function", function() {
       let {
         afterFlush
       } = Tracker;
@@ -109,21 +109,21 @@ describe("ViewModel", function() {
       it("checks the arguments", function() {
         this.viewmodel.vmInitial.autorun = "X";
         ViewModel.onRendered().call(this.instance);
-        return assert.isTrue(this.checkStub.calledWithExactly('@onRendered', "X", this.instance));
+        assert.isTrue(this.checkStub.calledWithExactly('@onRendered', "X", this.instance));
       });
 
       it("sets autorun for single function", function() {
         let ran = false;
         this.viewmodel.vmAutorun.push(() => ran = true);
         ViewModel.onRendered().call(this.instance);
-        return assert.isTrue(ran);
+        assert.isTrue(ran);
       });
 
-      return it("calls viewmodel.onRendered", function() {
+      it("calls viewmodel.onRendered", function() {
         let ran = false;
         this.viewmodel.vmOnRendered.push(() => ran = true);
         ViewModel.onRendered().call(this.instance);
-        return assert.isTrue(ran);
+        assert.isTrue(ran);
       });
     });
   });
@@ -134,7 +134,7 @@ describe("ViewModel", function() {
 
     it("returns a function", () => assert.isFunction(ViewModel.onCreated()));
 
-    return describe("return function", function() {
+    describe("return function", function() {
 
       beforeEach(function() {
 
@@ -154,7 +154,7 @@ describe("ViewModel", function() {
         this.helpersSpy = sinon.spy(this.template, 'helpers');
         this.currentDataStub = sinon.stub(Template , 'currentData');
         this.afterFlushStub = sinon.stub(Tracker, 'afterFlush');
-        return this.instance = {
+        this.instance = {
           data: "A",
           autorun(f) { return f( { firstRun: true }); },
           view: {
@@ -165,34 +165,34 @@ describe("ViewModel", function() {
 
       it("sets the viewmodel property on the template instance", function() {
         this.retFun.call(this.instance);
-        return assert.isTrue(this.instance.viewmodel instanceof ViewModel);
+        assert.isTrue(this.instance.viewmodel instanceof ViewModel);
       });
 
       it("adds the viewmodel to ViewModel.byId", function() {
         ViewModel.byId = {};
         this.retFun.call(this.instance);
-        return assert.equal(this.instance.viewmodel, ViewModel.byId[this.instance.viewmodel.vmId]);
+        assert.equal(this.instance.viewmodel, ViewModel.byId[this.instance.viewmodel.vmId]);
     });
 
       it("adds the viewmodel to ViewModel.byTemplate", function() {
         ViewModel.byTemplate = {};
         this.retFun.call(this.instance);
-        return assert.equal(this.instance.viewmodel, ViewModel.byTemplate['body'][this.instance.viewmodel.vmId]);
+        assert.equal(this.instance.viewmodel, ViewModel.byTemplate['body'][this.instance.viewmodel.vmId]);
     });
 
       it("adds templateInstance to the view model", function() {
         this.retFun.call(this.instance);
-        return assert.equal(this.instance.viewmodel.templateInstance, this.instance);
+        assert.equal(this.instance.viewmodel.templateInstance, this.instance);
       });
 
       it("adds view model properties as helpers", function() {
         this.retFun.call(this.instance);
-        return assert.ok(this.helper.id);
+        assert.ok(this.helper.id);
       });
 
       it("doesn't add reserved words as helpers", function() {
         this.retFun.call(this.instance);
-        return assert.notOk(this.helper.vmId);
+        assert.notOk(this.helper.vmId);
       });
 
       it("extends the view model with the data context", function() {
@@ -203,15 +203,15 @@ describe("ViewModel", function() {
         this.currentDataStub.returns(this.instance.data);
         this.retFun.call(this.instance);
         Tracker.afterFlush = cache;
-        return assert.equal('Alan', this.instance.viewmodel.name());
+        assert.equal('Alan', this.instance.viewmodel.name());
       });
 
-      return it("assigns viewmodel as child of the parent", function() {
+      it("assigns viewmodel as child of the parent", function() {
         const cache = Tracker.afterFlush;
         Tracker.afterFlush = f => f();
         this.retFun.call(this.instance);
         Tracker.afterFlush = cache;
-        return assert.isTrue(this.assignChildStub.calledWithExactly(this.instance.viewmodel));
+        assert.isTrue(this.assignChildStub.calledWithExactly(this.instance.viewmodel));
       });
     });
   });
@@ -225,11 +225,11 @@ describe("ViewModel", function() {
       this.nextIdStub = sinon.stub(ViewModel, 'nextId');
       this.nextIdStub.returns(99);
       this.onViewReadyFunction = null;
-      return Blaze.currentView =
+      Blaze.currentView =
         {onViewReady: f => { return this.onViewReadyFunction = f; }};
     });
 
-    return it("returns object with the next bind id", function() {
+    it("returns object with the next bind id", function() {
       const instanceStub = sinon.stub(Template, 'instance');
       const templateInstance = {
         viewmodel: {},
@@ -237,7 +237,7 @@ describe("ViewModel", function() {
       };
       instanceStub.returns(templateInstance);
       const ret = ViewModel.eventHelper();
-      return assert.equal(ret[ViewModel.bindIdAttribute + '-e'], 99);
+      assert.equal(ret[ViewModel.bindIdAttribute + '-e'], 99);
     });
   });
 
@@ -246,7 +246,7 @@ describe("ViewModel", function() {
       this.nextIdStub = sinon.stub(ViewModel, 'nextId');
       this.nextIdStub.returns(99);
       this.onViewReadyFunction = null;
-      return Blaze.currentView = {
+      Blaze.currentView = {
         onViewReady: f => { return this.onViewReadyFunction = f; },
         _templateInstance: {
           '$'() { return 'X'; }
@@ -262,7 +262,7 @@ describe("ViewModel", function() {
       };
       instanceStub.returns(templateInstance);
       const ret = ViewModel.bindHelper();
-      return assert.equal(ret[ViewModel.bindIdAttribute], 99);
+      assert.equal(ret[ViewModel.bindIdAttribute], 99);
     });
 
     it("adds the binding to ViewModel.bindObjects", function() {
@@ -278,17 +278,17 @@ describe("ViewModel", function() {
       };
       instanceStub.returns(templateInstance);
       ViewModel.bindHelper("text: name");
-      return assert.equal(ViewModel.bindObjects[99], bindObject);
+      assert.equal(ViewModel.bindObjects[99], bindObject);
     });
 
-    return it("adds a view model if the template doesn't have one", function() {
+    it("adds a view model if the template doesn't have one", function() {
       const addEmptyViewModelStub = sinon.stub(ViewModel, 'addEmptyViewModel');
       const instanceStub = sinon.stub(Template, 'instance');
       const templateInstance =
         {'$'() { return "X"; }};
       instanceStub.returns(templateInstance);
       ViewModel.bindHelper("text: name");
-      return assert.isTrue(addEmptyViewModelStub.calledWith(templateInstance));
+      assert.isTrue(addEmptyViewModelStub.calledWith(templateInstance));
     });
   });
 
@@ -297,14 +297,14 @@ describe("ViewModel", function() {
       const initial = {};
       const context = "X";
       const ret = ViewModel.getInitialObject(initial, context);
-      return assert.equal(initial, ret);
+      assert.equal(initial, ret);
     });
 
-    return it("returns the result of the function when initial is a function", function() {
+    it("returns the result of the function when initial is a function", function() {
       const initial = context => context + 1;
       const context = 1;
       const ret = ViewModel.getInitialObject(initial, context);
-      return assert.equal(2, ret);
+      assert.equal(2, ret);
     });
   });
 
@@ -312,28 +312,28 @@ describe("ViewModel", function() {
     it("returns a function", () => assert.isFunction(ViewModel.makeReactiveProperty("X")));
     it("sets default value", function() {
       const actual = ViewModel.makeReactiveProperty("X");
-      return assert.equal("X", actual());
+      assert.equal("X", actual());
     });
     it("sets and gets values", function() {
       const actual = ViewModel.makeReactiveProperty("X");
       actual("Y");
-      return assert.equal("Y", actual());
+      assert.equal("Y", actual());
     });
     it("resets the value", function() {
       const actual = ViewModel.makeReactiveProperty("X");
       actual("Y");
       actual.reset();
-      return assert.equal("X", actual());
+      assert.equal("X", actual());
     });
     it("has depend and changed", function() {
       const actual = ViewModel.makeReactiveProperty("X");
       assert.isFunction(actual.depend);
-      return assert.isFunction(actual.changed);
+      assert.isFunction(actual.changed);
     });
     it("reactifies arrays", function() {
       const actual = ViewModel.makeReactiveProperty([]);
       assert.ok(actual().depend);
-      return assert.isTrue(actual() instanceof Array);
+      assert.isTrue(actual() instanceof Array);
     });
 
     it("resets arrays", function() {
@@ -342,20 +342,20 @@ describe("ViewModel", function() {
       assert.equal(2, actual().length);
       actual.reset();
       assert.equal(1, actual().length);
-      return assert.equal(1, actual()[0]);
+      assert.equal(1, actual()[0]);
   });
 
     describe("delay", function() {
       beforeEach(function() {
         this.clock = sinon.useFakeTimers();
-        return ViewModel.delay = this.delay;
+        ViewModel.delay = this.delay;
       });
       afterEach(function() {
         this.clock.restore();
-        return this.delay = ViewModel.delay;
+        this.delay = ViewModel.delay;
       });
 
-      return it("delays values", function() {
+      it("delays values", function() {
         const actual = ViewModel.makeReactiveProperty("X");
         actual.delay = 10;
         actual("Y");
@@ -366,37 +366,37 @@ describe("ViewModel", function() {
       });
     });
 
-    return describe("validations", function() {
+    describe("validations", function() {
       it("returns a function", () => assert.isFunction(ViewModel.makeReactiveProperty(ViewModel.property.string)));
       it("sets default value", function() {
         const actual = ViewModel.makeReactiveProperty(ViewModel.property.string.default("X"));
-        return assert.equal("X", actual());
+        assert.equal("X", actual());
       });
       it("sets and gets values", function() {
         const actual = ViewModel.makeReactiveProperty(ViewModel.property.string.default("X"));
         actual("Y");
-        return assert.equal("Y", actual());
+        assert.equal("Y", actual());
       });
       it("resets the value", function() {
         const actual = ViewModel.makeReactiveProperty(ViewModel.property.string.default("X"));
         actual("Y");
         actual.reset();
-        return assert.equal("X", actual());
+        assert.equal("X", actual());
       });
 
       it("reactifies arrays", function() {
         const actual = ViewModel.makeReactiveProperty(ViewModel.property.array);
         assert.ok(actual().depend);
-        return assert.isTrue(actual() instanceof Array);
+        assert.isTrue(actual() instanceof Array);
       });
 
-      return it("resets arrays", function() {
+      it("resets arrays", function() {
         const actual = ViewModel.makeReactiveProperty(ViewModel.property.array.default([1]));
         actual().push(2);
         assert.equal(2, actual().length);
         actual.reset();
         assert.equal(1, actual().length);
-        return assert.equal(1, actual()[0]);
+        assert.equal(1, actual()[0]);
     });
   });
 });
@@ -408,12 +408,12 @@ describe("ViewModel", function() {
 
     it("checks the arguments", function() {
       ViewModel.addBinding("X");
-      return assert.isTrue(this.checkStub.calledWithExactly('@addBinding', "X"));
+      assert.isTrue(this.checkStub.calledWithExactly('@addBinding', "X"));
     });
 
     it("returns nothing", function() {
       const ret = ViewModel.addBinding("X");
-      return assert.isUndefined(ret);
+      assert.isUndefined(ret);
     });
 
     it("adds the binding to @bindings", function() {
@@ -423,7 +423,7 @@ describe("ViewModel", function() {
         bind() { return "X"; }
       });
       assert.equal(1, ViewModel.bindings[name].length);
-      return assert.equal("X", ViewModel.bindings[name][0].bind());
+      assert.equal("X", ViewModel.bindings[name][0].bind());
     });
 
     it("adds the binding to @bindings array", function() {
@@ -438,14 +438,14 @@ describe("ViewModel", function() {
       });
       assert.equal(2, ViewModel.bindings[name].length);
       assert.equal("X", ViewModel.bindings[name][0].bind());
-      return assert.equal("Y", ViewModel.bindings[name][1].bind());
+      assert.equal("Y", ViewModel.bindings[name][1].bind());
     });
 
     it("adds default priority 1 to the binding", function() {
       const name = getBindingName();
       ViewModel.addBinding({
         name});
-      return assert.equal(1, ViewModel.bindings[name][0].priority);
+      assert.equal(1, ViewModel.bindings[name][0].priority);
     });
 
     it("adds priority 10 to the binding", function() {
@@ -454,7 +454,7 @@ describe("ViewModel", function() {
         name,
         priority: 10
       });
-      return assert.equal(10, ViewModel.bindings[name][0].priority);
+      assert.equal(10, ViewModel.bindings[name][0].priority);
     });
 
     it("adds priority 2 with a selector", function() {
@@ -463,7 +463,7 @@ describe("ViewModel", function() {
         name,
         selector: 'A'
       });
-      return assert.equal(2, ViewModel.bindings[name][0].priority);
+      assert.equal(2, ViewModel.bindings[name][0].priority);
     });
 
     it("adds priority 2 with a bindIf", function() {
@@ -472,17 +472,17 @@ describe("ViewModel", function() {
         name,
         bindIf() {}
       });
-      return assert.equal(2, ViewModel.bindings[name][0].priority);
+      assert.equal(2, ViewModel.bindings[name][0].priority);
     });
 
-    return it("adds priority 3 with a selector and bindIf", function() {
+    it("adds priority 3 with a selector and bindIf", function() {
       const name = getBindingName();
       ViewModel.addBinding({
         name,
         selector: 'A',
         bindIf() {}
       });
-      return assert.equal(3, ViewModel.bindings[name][0].priority);
+      assert.equal(3, ViewModel.bindings[name][0].priority);
     });
   });
 
@@ -500,20 +500,20 @@ describe("ViewModel", function() {
       const element =
         {bind() {}};
       const ret = ViewModel.bindSingle(null, element);
-      return assert.isUndefined(ret);
+      assert.isUndefined(ret);
     });
 
     it("uses getBindArgument", function() {
 
       ViewModel.bindSingle('templateInstance', 'element', 'bindName', 'bindValue', 'bindObject', 'viewmodel', 'bindingArray', 'bindId', 'view');
-      return assert.isTrue(this.getBindArgumentStub.calledWithExactly('templateInstance', 'element', 'bindName', 'bindValue', 'bindObject', 'viewmodel', 'bindId', 'view'));
+      assert.isTrue(this.getBindArgumentStub.calledWithExactly('templateInstance', 'element', 'bindName', 'bindValue', 'bindObject', 'viewmodel', 'bindId', 'view'));
     });
 
     it("uses getBinding", function() {
       const bindArg = {};
       this.getBindArgumentStub.returns(bindArg);
       ViewModel.bindSingle('templateInstance', 'element', 'bindName', 'bindValue', 'bindObject', 'viewmodel', 'bindingArray');
-      return assert.isTrue(this.getBindingStub.calledWithExactly('bindName', bindArg, 'bindingArray'));
+      assert.isTrue(this.getBindingStub.calledWithExactly('bindName', bindArg, 'bindingArray'));
     });
 
     it("executes autorun", function() {
@@ -526,7 +526,7 @@ describe("ViewModel", function() {
         autorun: bindingAutorun});
 
       ViewModel.bindSingle();
-      return assert.isTrue(spy.calledWithExactly(bindingAutorun));
+      assert.isTrue(spy.calledWithExactly(bindingAutorun));
     });
 
     it("executes bind", function() {
@@ -537,10 +537,10 @@ describe("ViewModel", function() {
       this.getBindingStub.returns(arg);
 
       ViewModel.bindSingle();
-      return assert.isTrue(spy.calledWithExactly('X'));
+      assert.isTrue(spy.calledWithExactly('X'));
     });
 
-    return it("binds events", function() {
+    it("binds events", function() {
       this.getBindingStub.returns({
         events: { a: 1, b: 2 }});
       const element =
@@ -549,7 +549,7 @@ describe("ViewModel", function() {
       ViewModel.bindSingle(null, element);
       assert.isTrue(spy.calledTwice);
       assert.isTrue(spy.calledWith('a'));
-      return assert.isTrue(spy.calledWith('b'));
+      assert.isTrue(spy.calledWith('b'));
     });
   });
 
@@ -563,7 +563,7 @@ describe("ViewModel", function() {
       bindings[bindName] = [defaultB];
 
       const ret = ViewModel.getBinding('bindName', 'bindArg', bindings);
-      return assert.equal(ret, defaultB);
+      assert.equal(ret, defaultB);
     });
 
     it("returns first binding in one element array", function() {
@@ -574,7 +574,7 @@ describe("ViewModel", function() {
       bindings[bindName] = [oneBinding];
 
       const ret = ViewModel.getBinding(bindName, 'bindArg', bindings);
-      return assert.equal(ret, oneBinding);
+      assert.equal(ret, oneBinding);
     });
 
     it("returns default binding if can't find one that passes bindIf", function() {
@@ -606,7 +606,7 @@ describe("ViewModel", function() {
         {X: [oneBinding, twoBinding]};
 
       const ret = ViewModel.getBinding('X', 'bindArg', bindings);
-      return assert.equal(ret, twoBinding);
+      assert.equal(ret, twoBinding);
     });
 
     it("returns first that passes bindIf", function() {
@@ -624,7 +624,7 @@ describe("ViewModel", function() {
         {X: [oneBinding, twoBinding]};
 
       const ret = ViewModel.getBinding('X', 'bindArg', bindings);
-      return assert.equal(ret, twoBinding);
+      assert.equal(ret, twoBinding);
     });
 
     it("returns first that passes selector", function() {
@@ -647,7 +647,7 @@ describe("ViewModel", function() {
         }
       };
       const ret = ViewModel.getBinding('X', bindArg, bindings);
-      return assert.equal(ret, twoBinding);
+      assert.equal(ret, twoBinding);
     });
 
     it("returns first that passes bindIf and selector", function() {
@@ -672,10 +672,10 @@ describe("ViewModel", function() {
         }
       };
       const ret = ViewModel.getBinding('X', bindArg, bindings);
-      return assert.equal(ret, twoBinding);
+      assert.equal(ret, twoBinding);
     });
 
-    return it("returns first that passes bindIf and selector with highest priority", function() {
+    it("returns first that passes bindIf and selector with highest priority", function() {
       const oneBinding = {
         name: 'X',
         priority: 1,
@@ -697,7 +697,7 @@ describe("ViewModel", function() {
         }
       };
       const ret = ViewModel.getBinding('X', bindArg, bindings);
-      return assert.equal(ret, twoBinding);
+      assert.equal(ret, twoBinding);
     });
   });
 
@@ -705,7 +705,7 @@ describe("ViewModel", function() {
 
     beforeEach(function() {
       this.getVmValueGetterStub = sinon.stub(ViewModel, 'getVmValueGetter');
-      return this.getVmValueSetterStub = sinon.stub(ViewModel, 'getVmValueSetter');
+      this.getVmValueSetterStub = sinon.stub(ViewModel, 'getVmValueSetter');
     });
 
     it("returns right object", function() {
@@ -719,7 +719,7 @@ describe("ViewModel", function() {
         bindValue: 'bindValue',
         viewmodel: 'viewmodel'
       };
-      return assert.isTrue(_.isEqual(expected, ret));
+      assert.isTrue(_.isEqual(expected, ret));
     });
 
     it("returns argument with autorun", function() {
@@ -728,19 +728,19 @@ describe("ViewModel", function() {
       const spy = sinon.spy(templateInstance, 'autorun');
       const bindArg = ViewModel.getBindArgument(templateInstance, 'element', 'bindName', 'bindValue', 'bindObject', 'viewmodel');
       bindArg.autorun(function() {});
-      return assert.isTrue(spy.calledOnce);
+      assert.isTrue(spy.calledOnce);
     });
 
     it("returns argument with vmValueGetter", function() {
       this.getVmValueGetterStub.returns(() => "A");
       const bindArg = ViewModel.getBindArgument('templateInstance', 'element', 'bindName', 'bindValue', 'bindObject', 'viewmodel');
-      return assert.equal("A", bindArg.getVmValue());
+      assert.equal("A", bindArg.getVmValue());
     });
 
-    return it("returns argument with vmValueSetter", function() {
+    it("returns argument with vmValueSetter", function() {
       this.getVmValueSetterStub.returns(() => "A");
       const bindArg = ViewModel.getBindArgument('templateInstance', 'element', 'bindName', 'bindValue', 'bindObject', 'viewmodel');
-      return assert.equal("A", bindArg.setVmValue());
+      assert.equal("A", bindArg.setVmValue());
     });
   });
 
@@ -750,7 +750,7 @@ describe("ViewModel", function() {
       const viewmodel = {};
       const bindValue = ViewModel.parseBind("x: 1 + 'A'").x;
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
-      return assert.equal("1A", getVmValue());
+      assert.equal("1A", getVmValue());
     });
 
     it("returns value from name", function() {
@@ -758,7 +758,7 @@ describe("ViewModel", function() {
         {name() { return "A"; }};
       const bindValue = 'name';
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
-      return assert.equal("A", getVmValue());
+      assert.equal("A", getVmValue());
     });
 
     it("returns short circuits false && true", function() {
@@ -773,7 +773,7 @@ describe("ViewModel", function() {
       const bindValue = "a && b";
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
       assert.equal(false, getVmValue());
-      return assert.equal(false, called);
+      assert.equal(false, called);
     });
 
     it("returns short circuits true || false", function() {
@@ -788,7 +788,7 @@ describe("ViewModel", function() {
       const bindValue = "a || b";
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
       assert.equal(true, getVmValue());
-      return assert.equal(false, called);
+      assert.equal(false, called);
     });
 
     it("returns value from call(1, -2)", function() {
@@ -796,7 +796,7 @@ describe("ViewModel", function() {
         {call(a, b) { return b; }};
       const bindValue = "call(1, -2)";
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
-      return assert.equal(-2, getVmValue());
+      assert.equal(-2, getVmValue());
     });
 
     it("returns value from call(1 - 2)", function() {
@@ -804,7 +804,7 @@ describe("ViewModel", function() {
         {call(a) { return a; }};
       const bindValue = "call(1 - 2)";
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
-      return assert.equal(-1, getVmValue());
+      assert.equal(-1, getVmValue());
     });
 
     it("returns value from call(1, 1 - 2)", function() {
@@ -812,7 +812,7 @@ describe("ViewModel", function() {
         {call(a, b) { return b; }};
       const bindValue = "call(1, 1 - 2)";
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
-      return assert.equal(-1, getVmValue());
+      assert.equal(-1, getVmValue());
     });
 
     it("returns value from name(address.zip)", function() {
@@ -832,7 +832,7 @@ describe("ViewModel", function() {
         {name() { return "A"; }};
       const bindValue = '!name';
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
-      return assert.equal(false, getVmValue());
+      assert.equal(false, getVmValue());
     });
 
     it("returns value from name.first (first is prop)", function() {
@@ -854,7 +854,7 @@ describe("ViewModel", function() {
       };
       const bindValue = 'name.first';
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
-      return assert.equal("A", getVmValue());
+      assert.equal("A", getVmValue());
     });
 
     it("returns value from name()", function() {
@@ -862,7 +862,7 @@ describe("ViewModel", function() {
         {name() { return "A"; }};
       const bindValue = 'name()';
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
-      return assert.equal("A", getVmValue());
+      assert.equal("A", getVmValue());
     });
 
     it("doesn't give arguments to name()", function() {
@@ -870,7 +870,7 @@ describe("ViewModel", function() {
         {name() { return arguments.length; }};
       const bindValue = 'name()';
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
-      return assert.equal(0, getVmValue());
+      assert.equal(0, getVmValue());
     });
 
     it("returns value from name('a')", function() {
@@ -878,7 +878,7 @@ describe("ViewModel", function() {
         {name(a) { return a; }};
       const bindValue = "name('a')";
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
-      return assert.equal("a", getVmValue());
+      assert.equal("a", getVmValue());
     });
 
     it("returns value from name('a', 1)", function() {
@@ -896,7 +896,7 @@ describe("ViewModel", function() {
       };
       const bindValue = 'name(first)';
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
-      return assert.equal("A", getVmValue());
+      assert.equal("A", getVmValue());
     });
 
     it("returns value from name(first, second)", function() {
@@ -907,7 +907,7 @@ describe("ViewModel", function() {
       };
       const bindValue = 'name(first, second)';
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
-      return assert.equal("AB", getVmValue());
+      assert.equal("AB", getVmValue());
     });
 
     it("returns value from name(first, second) with numbers", function() {
@@ -918,7 +918,7 @@ describe("ViewModel", function() {
       };
       const bindValue = 'name(first, second)';
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
-      return assert.equal(3, getVmValue());
+      assert.equal(3, getVmValue());
     });
 
     it("returns value from name(first, second) with booleans", function() {
@@ -929,7 +929,7 @@ describe("ViewModel", function() {
       };
       const bindValue = 'name(first, second)';
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
-      return assert.isTrue(getVmValue());
+      assert.isTrue(getVmValue());
     });
 
     it("returns value from name(first) with null", function() {
@@ -939,7 +939,7 @@ describe("ViewModel", function() {
       };
       const bindValue = 'name(first)';
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
-      return assert.isNull(getVmValue());
+      assert.isNull(getVmValue());
     });
 
     it("returns value from name(first) with undefined", function() {
@@ -949,7 +949,7 @@ describe("ViewModel", function() {
       };
       const bindValue = 'name(first)';
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
-      return assert.isUndefined(getVmValue());
+      assert.isUndefined(getVmValue());
     });
 
     it("returns value from name(1, 2)", function() {
@@ -957,7 +957,7 @@ describe("ViewModel", function() {
         {name(a, b) { return a + b; }};
       const bindValue = 'name(1, 2)';
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
-      return assert.equal(3, getVmValue());
+      assert.equal(3, getVmValue());
     });
 
     it("returns value from name(false, true)", function() {
@@ -965,7 +965,7 @@ describe("ViewModel", function() {
         {name(a, b) { return a || b; }};
       const bindValue = 'name(false, true)';
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
-      return assert.isTrue(getVmValue());
+      assert.isTrue(getVmValue());
     });
 
     it("returns value from name(null)", function() {
@@ -973,7 +973,7 @@ describe("ViewModel", function() {
         {name(a) { return a; }};
       const bindValue = 'name(null)';
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
-      return assert.isNull(getVmValue());
+      assert.isNull(getVmValue());
     });
 
     it("returns value from name(undefined)", function() {
@@ -981,7 +981,7 @@ describe("ViewModel", function() {
         {name(a) { return a; }};
       const bindValue = 'name(undefined)';
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
-      return assert.isUndefined(getVmValue());
+      assert.isUndefined(getVmValue());
     });
 
     it("returns value from name(!first, !second) with booleans", function() {
@@ -992,7 +992,7 @@ describe("ViewModel", function() {
       };
       const bindValue = 'name(!first, !second)';
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
-      return assert.isTrue(getVmValue());
+      assert.isTrue(getVmValue());
     });
 
     it("returns value from name().first (first is prop)", function() {
@@ -1003,7 +1003,7 @@ describe("ViewModel", function() {
       };
       const bindValue = 'name.first';
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
-      return assert.equal("A", getVmValue());
+      assert.equal("A", getVmValue());
     });
 
     it("returns value from name().first (first is func)", function() {
@@ -1014,7 +1014,7 @@ describe("ViewModel", function() {
       };
       const bindValue = 'name.first';
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
-      return assert.equal("A", getVmValue());
+      assert.equal("A", getVmValue());
     });
 
     it("returns value from name(1).first (first is prop)", function() {
@@ -1035,7 +1035,7 @@ describe("ViewModel", function() {
         {name(a) { return a; }};
       const bindValue = 'name(1)';
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
-      return assert.isTrue(1 === getVmValue());
+      assert.isTrue(1 === getVmValue());
     });
 
     it("returns value from name().first()", function() {
@@ -1046,7 +1046,7 @@ describe("ViewModel", function() {
       };
       const bindValue = 'name().first()';
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
-      return assert.equal("A", getVmValue());
+      assert.equal("A", getVmValue());
     });
 
 
@@ -1062,7 +1062,7 @@ describe("ViewModel", function() {
       };
       const bindValue = 'name().first.second';
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
-      return assert.equal("A", getVmValue());
+      assert.equal("A", getVmValue());
     });
 
     it("returns value from name().first.second()", function() {
@@ -1077,7 +1077,7 @@ describe("ViewModel", function() {
       };
       const bindValue = 'name().first.second()';
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
-      return assert.equal("A", getVmValue());
+      assert.equal("A", getVmValue());
     });
 
     it("returns value from name().first.second()", function() {
@@ -1092,7 +1092,7 @@ describe("ViewModel", function() {
       };
       const bindValue = 'name().first.second()';
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
-      return assert.equal("A", getVmValue());
+      assert.equal("A", getVmValue());
     });
 
     it("returns value from first + second", function() {
@@ -1545,7 +1545,7 @@ describe("ViewModel", function() {
       assert.equal(getVmValue(), 8);
     });
 
-    return it("returns value from 9%4", function() {
+    it("returns value from 9%4", function() {
       const viewmodel = {};
       const bindValue = ViewModel.parseBind("x: 9%4").x;
       const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
@@ -1672,7 +1672,7 @@ describe("ViewModel", function() {
       assert.equal(2, val);
     });
 
-    return it("sets first.second.third p.p.p", function() {
+    it("sets first.second.third p.p.p", function() {
       const viewmodel = {
         first: {
           second: {
@@ -1706,7 +1706,7 @@ describe("ViewModel", function() {
     };
     ViewModel.addEmptyViewModel(templateInstance);
     assert.equal(context, templateInstance);
-    return assert.isTrue(onViewDestroyedCalled);
+    assert.isTrue(onViewDestroyedCalled);
   }));
 
   describe("@parentTemplate", function() {
@@ -1715,7 +1715,7 @@ describe("ViewModel", function() {
       const templateInstance =
         {view: {}};
       const parent = ViewModel.parentTemplate(templateInstance);
-      return assert.isUndefined(parent);
+      assert.isUndefined(parent);
     });
 
     it("returns undefined if parent view isn't a template", function() {
@@ -1727,7 +1727,7 @@ describe("ViewModel", function() {
         }
       };
       const parent = ViewModel.parentTemplate(templateInstance);
-      return assert.isUndefined(parent);
+      assert.isUndefined(parent);
     });
 
     it("returns template instance if parent view is a template", function() {
@@ -1740,10 +1740,10 @@ describe("ViewModel", function() {
         }
       };
       const parent = ViewModel.parentTemplate(templateInstance);
-      return assert.equal("X", parent);
+      assert.equal("X", parent);
     });
 
-    return it("returns template instance if parent view is body", function() {
+    it("returns template instance if parent view is body", function() {
       const templateInstance = {
         view: {
           parentView: {
@@ -1753,7 +1753,7 @@ describe("ViewModel", function() {
         }
       };
       const parent = ViewModel.parentTemplate(templateInstance);
-      return assert.equal("X", parent);
+      assert.equal("X", parent);
     });
   });
 
@@ -1768,13 +1768,13 @@ describe("ViewModel", function() {
       };
       ViewModel.assignChild(vm);
       assert.equal(1, arr.length);
-      return assert.equal(vm, arr[0]);
+      assert.equal(vm, arr[0]);
   });
 
-    return it("doesn't do anything without a parent template", function() {
+    it("doesn't do anything without a parent template", function() {
       const vm =
         {parent() {}};
-      return ViewModel.assignChild(vm);
+      ViewModel.assignChild(vm);
     });
   });
 
@@ -1785,20 +1785,20 @@ describe("ViewModel", function() {
           name: 'body'
         }
       });
-      return assert.equal('body', name);
+      assert.equal('body', name);
     });
 
-    return it("returns name of the template", function() {
+    it("returns name of the template", function() {
       const name = ViewModel.templateName({
         view: {
           name: 'Template.mine'
         }
       });
-      return assert.equal('mine', name);
+      assert.equal('mine', name);
     });
   });
 
-  return describe("@find", function() {
+  describe("@find", function() {
     before(function() {
       ViewModel.byId = {};
       ViewModel.byTemplate = {};
@@ -1831,7 +1831,7 @@ describe("ViewModel", function() {
           name: 'Template.Y'
         }
       };
-      return ViewModel.add(this.vm3);
+      ViewModel.add(this.vm3);
     });
 
 
@@ -1841,7 +1841,7 @@ describe("ViewModel", function() {
       assert.equal(3, vms.length);
       assert.equal(this.vm1, vms[0]);
       assert.equal(this.vm2, vms[1]);
-      return assert.equal(this.vm3, vms[2]);
+      assert.equal(this.vm3, vms[2]);
   });
 
     it("returns all for template X", function() {
@@ -1849,14 +1849,14 @@ describe("ViewModel", function() {
       assert.isTrue(vms instanceof Array);
       assert.equal(2, vms.length);
       assert.equal(this.vm1, vms[0]);
-      return assert.equal(this.vm2, vms[1]);
+      assert.equal(this.vm2, vms[1]);
   });
 
     it("returns all for template X with a predicate", function() {
       const vms = ViewModel.find('X', vm => vm.name() === 'B');
       assert.isTrue(vms instanceof Array);
       assert.equal(1, vms.length);
-      return assert.equal(this.vm2, vms[0]);
+      assert.equal(this.vm2, vms[0]);
   });
 
     it("returns all for a predicate", function() {
@@ -1864,29 +1864,29 @@ describe("ViewModel", function() {
       assert.isTrue(vms instanceof Array);
       assert.equal(2, vms.length);
       assert.equal(this.vm2, vms[0]);
-      return assert.equal(this.vm3, vms[1]);
+      assert.equal(this.vm3, vms[1]);
   });
 
-    return describe("@findOne", function() {
+    describe("@findOne", function() {
 
       it("returns first one without params", function() {
         const vm = ViewModel.findOne();
-        return assert.equal(this.vm1, vm);
+        assert.equal(this.vm1, vm);
       });
 
       it("returns first for template X", function() {
         const vm = ViewModel.findOne('X');
-        return assert.equal(this.vm1, vm);
+        assert.equal(this.vm1, vm);
       });
 
       it("returns first for template X with predicate", function() {
         const vm = ViewModel.findOne('X', vm => vm.name() === 'B');
-        return assert.equal(this.vm2, vm);
+        assert.equal(this.vm2, vm);
       });
 
-      return it("returns first with predicate", function() {
+      it("returns first with predicate", function() {
         const vm = ViewModel.findOne(vm => vm.age() === 1);
-        return assert.equal(this.vm2, vm);
+        assert.equal(this.vm2, vm);
       });
     });
   });

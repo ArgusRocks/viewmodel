@@ -19,7 +19,7 @@ describe("ViewModel Properties", function() {
 
     it("fails with a date", () => assert.isFalse(prop.verify(new Date())));
 
-    return it("fails with a boolean", () => assert.isFalse(prop.verify(true)));
+    it("fails with a boolean", () => assert.isFalse(prop.verify(true)));
   });
 
   describe("number", function() {
@@ -39,7 +39,7 @@ describe("ViewModel Properties", function() {
 
     it("fails with a date", () => assert.isFalse(prop.verify(new Date())));
 
-    return it("fails with a boolean", () => assert.isFalse(prop.verify(true)));
+    it("fails with a boolean", () => assert.isFalse(prop.verify(true)));
   });
 
   describe("integer", function() {
@@ -59,7 +59,7 @@ describe("ViewModel Properties", function() {
 
     it("fails with a date", () => assert.isFalse(prop.verify(new Date())));
 
-    return it("fails with a boolean", () => assert.isFalse(prop.verify(true)));
+    it("fails with a boolean", () => assert.isFalse(prop.verify(true)));
   });
 
   describe("boolean", function() {
@@ -73,7 +73,7 @@ describe("ViewModel Properties", function() {
 
     it("fails with a date", () => assert.isFalse(prop.verify(new Date())));
 
-    return it("passes with a boolean", () => assert.isTrue(prop.verify(false)));
+    it("passes with a boolean", () => assert.isTrue(prop.verify(false)));
   });
 
   describe("object", function() {
@@ -87,7 +87,7 @@ describe("ViewModel Properties", function() {
 
     it("fails with a date", () => assert.isFalse(prop.verify(new Date())));
 
-    return it("fails with a boolean", () => assert.isFalse(prop.verify(true)));
+    it("fails with a boolean", () => assert.isFalse(prop.verify(true)));
   });
 
   describe("date", function() {
@@ -101,7 +101,7 @@ describe("ViewModel Properties", function() {
 
     it("passes with a date", () => assert.isTrue(prop.verify(new Date())));
 
-    return it("fails with a boolean", () => assert.isFalse(prop.verify(true)));
+    it("fails with a boolean", () => assert.isFalse(prop.verify(true)));
   });
 
 
@@ -114,7 +114,7 @@ describe("ViewModel Properties", function() {
 
       it("xx", () => assert.isTrue(prop.verify("xx")));
 
-      return it("xxx", () => assert.isTrue(prop.verify("xxx")));
+      it("xxx", () => assert.isTrue(prop.verify("xxx")));
     });
 
     describe("number", function() {
@@ -124,7 +124,7 @@ describe("ViewModel Properties", function() {
 
       it("2", () => assert.isTrue(prop.verify(2)));
 
-      return it("3", () => assert.isTrue(prop.verify(3)));
+      it("3", () => assert.isTrue(prop.verify(3)));
     });
 
     describe("integer", function() {
@@ -134,7 +134,7 @@ describe("ViewModel Properties", function() {
 
       it("2", () => assert.isTrue(prop.verify(2)));
 
-      return it("3", () => assert.isTrue(prop.verify(3)));
+      it("3", () => assert.isTrue(prop.verify(3)));
     });
 
     describe("date", function() {
@@ -144,13 +144,13 @@ describe("ViewModel Properties", function() {
 
       it("new Date(2020, 1, 2)", () => assert.isTrue(prop.verify(new Date(2020, 1, 2))));
 
-      return it("new Date(2020, 1, 3)", () => assert.isTrue(prop.verify(new Date(2020, 1, 3))));
+      it("new Date(2020, 1, 3)", () => assert.isTrue(prop.verify(new Date(2020, 1, 3))));
     });
 
-    return describe("not specified", function() {
+    describe("not specified", function() {
       const prop = new ViewModel.Property().min(2);
 
-      return it("1", () => assert.isTrue(prop.verify(2)));
+      it("1", () => assert.isTrue(prop.verify(2)));
     });
   });
 
@@ -164,7 +164,7 @@ describe("ViewModel Properties", function() {
 
       it("xx", () => assert.isTrue(prop.verify("xx")));
 
-      return it("xxx", () => assert.isFalse(prop.verify("xxx")));
+      it("xxx", () => assert.isFalse(prop.verify("xxx")));
     });
 
     describe("number", function() {
@@ -174,7 +174,7 @@ describe("ViewModel Properties", function() {
 
       it("2", () => assert.isTrue(prop.verify(2)));
 
-      return it("3", () => assert.isFalse(prop.verify(3)));
+      it("3", () => assert.isFalse(prop.verify(3)));
     });
 
     describe("integer", function() {
@@ -184,7 +184,7 @@ describe("ViewModel Properties", function() {
 
       it("2", () => assert.isTrue(prop.verify(2)));
 
-      return it("3", () => assert.isFalse(prop.verify(3)));
+      it("3", () => assert.isFalse(prop.verify(3)));
     });
 
     describe("date", function() {
@@ -194,13 +194,13 @@ describe("ViewModel Properties", function() {
 
       it("new Date(2020, 1, 2)", () => assert.isTrue(prop.verify(new Date(2020, 1, 2))));
 
-      return it("new Date(2020, 1, 3)", () => assert.isFalse(prop.verify(new Date(2020, 1, 3))));
+      it("new Date(2020, 1, 3)", () => assert.isFalse(prop.verify(new Date(2020, 1, 3))));
     });
 
-    return describe("not specified", function() {
+    describe("not specified", function() {
       const prop = new ViewModel.Property().max(2);
 
-      return it("1", () => assert.isTrue(prop.verify(1)));
+      it("1", () => assert.isTrue(prop.verify(1)));
     });
   });
 
@@ -210,7 +210,7 @@ describe("ViewModel Properties", function() {
 
     it("1", () => assert.isFalse(prop.verify(1)));
 
-    return it("2", () => assert.isTrue(prop.verify(2)));
+    it("2", () => assert.isTrue(prop.verify(2)));
   });
 
 
@@ -219,7 +219,7 @@ describe("ViewModel Properties", function() {
 
     it("'1'", () => assert.isFalse(prop.verify("1")));
 
-    return it("1", () => assert.isTrue(prop.verify(1)));
+    it("1", () => assert.isTrue(prop.verify(1)));
   });
 
   describe("notEqual", function() {
@@ -227,7 +227,7 @@ describe("ViewModel Properties", function() {
 
     it("'1'", () => assert.isTrue(prop.verify("1")));
 
-    return it("1", () => assert.isFalse(prop.verify(1)));
+    it("1", () => assert.isFalse(prop.verify(1)));
   });
 
   describe("notBlank", function() {
@@ -241,7 +241,7 @@ describe("ViewModel Properties", function() {
 
     it("null", () => assert.isFalse(prop.verify(null)));
 
-    return it("undefined", () => assert.isFalse(prop.verify(undefined)));
+    it("undefined", () => assert.isFalse(prop.verify(undefined)));
   });
 
   describe("between", function() {
@@ -255,10 +255,10 @@ describe("ViewModel Properties", function() {
 
       it("xxxx", () => assert.isTrue(prop.verify("xxxx")));
 
-      return it("xxxxx", () => assert.isFalse(prop.verify("xxxxx")));
+      it("xxxxx", () => assert.isFalse(prop.verify("xxxxx")));
     });
 
-    return describe("number", function() {
+    describe("number", function() {
       const prop = new ViewModel.Property().number.between(2, 4);
 
       it("1", () => assert.isFalse(prop.verify(1)));
@@ -267,7 +267,7 @@ describe("ViewModel Properties", function() {
 
       it("4", () => assert.isTrue(prop.verify(4)));
 
-      return it("5", () => assert.isFalse(prop.verify(5)));
+      it("5", () => assert.isFalse(prop.verify(5)));
     });
   });
 
@@ -282,10 +282,10 @@ describe("ViewModel Properties", function() {
 
       it("xxxx", () => assert.isFalse(prop.verify("xxxx")));
 
-      return it("xxxxx", () => assert.isTrue(prop.verify("xxxxx")));
+      it("xxxxx", () => assert.isTrue(prop.verify("xxxxx")));
     });
 
-    return describe("number", function() {
+    describe("number", function() {
       const prop = new ViewModel.Property().number.notBetween(2, 4);
 
       it("1", () => assert.isTrue(prop.verify(1)));
@@ -294,15 +294,15 @@ describe("ViewModel Properties", function() {
 
       it("4", () => assert.isFalse(prop.verify(4)));
 
-      return it("5", () => assert.isTrue(prop.verify(5)));
+      it("5", () => assert.isTrue(prop.verify(5)));
     });
   });
 
-  return describe("regex", function() {
+  describe("regex", function() {
     const prop = new ViewModel.Property().regex(/x/);
 
     it("axc", () => assert.isTrue(prop.verify("axc")));
 
-    return it("abc", () => assert.isFalse(prop.verify("abc")));
+    it("abc", () => assert.isFalse(prop.verify("abc")));
   });
 });

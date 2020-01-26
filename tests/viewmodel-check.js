@@ -12,7 +12,7 @@ describe("ViewModel", () => describe("@check", function() {
   beforeEach(function() {
     Package['manuel:viewmodel-debug'] =
       {VmCheck() {}};
-    return this.vmCheckStub = sinon.stub(Package['manuel:viewmodel-debug'], "VmCheck");
+    this.vmCheckStub = sinon.stub(Package['manuel:viewmodel-debug'], "VmCheck");
   });
 
   afterEach(() => sinon.restoreAll());
@@ -21,13 +21,13 @@ describe("ViewModel", () => describe("@check", function() {
     ViewModel.ignoreErrors = true;
     ViewModel.check();
     ViewModel.ignoreErrors = false;
-    return assert.isFalse(this.vmCheckStub.called);
+    assert.isFalse(this.vmCheckStub.called);
   });
 
   it("calls VmCheck with parameters", function() {
     ViewModel.check(1, 2, 3);
-    return assert.isTrue(this.vmCheckStub.calledWithExactly(1, 2, 3));
+    assert.isTrue(this.vmCheckStub.calledWithExactly(1, 2, 3));
   });
 
-  return it("returns undefined", () => assert.isUndefined(ViewModel.check()));
+  it("returns undefined", () => assert.isUndefined(ViewModel.check()));
 }));

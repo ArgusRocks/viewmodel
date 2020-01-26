@@ -11,14 +11,14 @@ import { assert } from 'chai';
 describe("ViewModel", function() {
 
   beforeEach(function() {
-    return this.checkStub = sinon.stub(ViewModel, "check");
+    this.checkStub = sinon.stub(ViewModel, "check");
   });
 
   afterEach(() => sinon.restoreAll());
 
-  return describe("@parseBind", () => it("parses object", function() {
+  describe("@parseBind", () => it("parses object", function() {
     const obj = ViewModel.parseBind("text: name, full: first + ' ' + last");
-    return assert.isTrue(_.isEqual({ text: "name", full: "first + ' ' + last" }, obj));
+    assert.isTrue(_.isEqual({ text: "name", full: "first + ' ' + last" }, obj));
   }));
 });
 

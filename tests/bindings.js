@@ -19,25 +19,25 @@ describe("bindings - input value nested", function() {
       }
     });
     this.element = $("<input></input>");
-    return this.templateInstance =
+    this.templateInstance =
       {autorun: Tracker.autorun};
   });
 
   describe("input value nested", () => beforeEach(function() {
     const bindObject =
       {value: "formData.position"};
-    return this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
+    this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
   }));
 
   it("gets value", function() {
-    return assert.equal("X", this.viewmodel.formData().position);
+    assert.equal("X", this.viewmodel.formData().position);
   });
 
-  return it("sets value from vm", function(done) {
+  it("sets value from vm", function(done) {
     this.viewmodel.formData({ position: "Y" });
-    return delay(() => {
+    delay(() => {
       assert.equal("Y", this.viewmodel.formData().position);
-      return done();
+      done();
     });
   });
 });
@@ -47,12 +47,12 @@ describe("bindings", function() {
   beforeEach(function() {
     this.viewmodel = new ViewModel({
       name: '',
-      changeName(v) { return this.name(v); },
+      changeName(v) { this.name(v); },
       on: true,
       off: false,
       array: []});
     this.element = $("<button></button>");
-    return this.templateInstance =
+    this.templateInstance =
       {autorun: Tracker.autorun};
   });
 
@@ -60,47 +60,47 @@ describe("bindings", function() {
     beforeEach(function() {
       const bindObject =
         {value: 'name'};
-      return this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
+      this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
     });
 
 
     it("sets value from vm", function(done) {
       this.viewmodel.name('X');
-      return delay(() => {
+      delay(() => {
         assert.equal("X", this.element.val());
-        return done();
+        done();
       });
     });
 
     it("sets value from element", function(done) {
       this.element.val('X');
       this.element.trigger('input');
-      return delay(() => {
+      delay(() => {
         assert.equal("X", this.viewmodel.name());
-        return done();
+        done();
       });
     });
 
     it("can handle undefined triggered by element", function(done) {
       this.viewmodel.name(undefined);
-      return delay(() => {
+      delay(() => {
         this.element.val('X');
         this.element.trigger('input');
-        return delay(() => {
+        delay(() => {
           assert.equal("X", this.viewmodel.name());
-          return done();
+          done();
         });
       });
     });
 
     it("can handle null triggered by element", function(done) {
       this.viewmodel.name(null);
-      return delay(() => {
+      delay(() => {
         this.element.val('X');
         this.element.trigger('input');
-        return delay(() => {
+        delay(() => {
           assert.equal("X", this.viewmodel.name());
-          return done();
+          done();
         });
       });
     });
@@ -108,27 +108,27 @@ describe("bindings", function() {
     it("can handle undefined", function(done) {
       this.element.val('X');
       this.viewmodel.name(undefined);
-      return delay(() => {
+      delay(() => {
         assert.equal("", this.element.val());
-        return done();
+        done();
       });
     });
 
     it("can handle null", function(done) {
       this.element.val('X');
       this.viewmodel.name(null);
-      return delay(() => {
+      delay(() => {
         assert.equal("", this.element.val());
-        return done();
+        done();
       });
     });
 
-    return it("sets value from element (change event)", function(done) {
+    it("sets value from element (change event)", function(done) {
       this.element.val('X');
       this.element.trigger('change');
-      return delay(() => {
+      delay(() => {
         assert.equal("X", this.viewmodel.name());
-        return done();
+        done();
       });
     });
   });
@@ -141,10 +141,10 @@ describe("bindings", function() {
         throttle: '10',
         bindId: 1
       };
-      return this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings, 99, {});});
+      this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings, 99, {});});
 
     afterEach(function() {
-      return this.clock.restore();
+      this.clock.restore();
     });
 
     it("delays value from element", function() {
@@ -156,7 +156,7 @@ describe("bindings", function() {
       assert.equal('X', this.viewmodel.name());
     });
 
-    return it("throttles the value", function() {
+    it("throttles the value", function() {
       this.element.val('X');
       this.element.trigger('input');
       this.clock.tick(8);
@@ -176,14 +176,14 @@ describe("bindings", function() {
     beforeEach(function() {
       const bindObject =
         {click: 'changeName("X")'};
-      return this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
+      this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
     });
 
-    return it("triggers event", function(done) {
+    it("triggers event", function(done) {
       this.element.trigger('click');
-      return delay(() => {
+      delay(() => {
         assert.equal("X", this.viewmodel.name());
-        return done();
+        done();
       });
     });
   });
@@ -192,14 +192,14 @@ describe("bindings", function() {
     beforeEach(function() {
       const bindObject =
         {toggle: 'off'};
-      return this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
+      this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
     });
 
-    return it("flips boolean", function(done) {
+    it("flips boolean", function(done) {
       this.element.trigger('click');
-      return delay(() => {
+      delay(() => {
         assert.equal(true, this.viewmodel.off());
-        return done();
+        done();
       });
     });
   });
@@ -208,23 +208,23 @@ describe("bindings", function() {
     beforeEach(function() {
       const bindObject =
         {if: 'on'};
-      return this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
+      this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
     });
 
     it("does not hide element when true", function(done) {
-      return delay(() => {
+      delay(() => {
         assert.equal("", this.element.inlineStyle("display"));
         // Fixing Manuel's tests: There is no inline style "display" when true
         // assert.equal("inline-block", this.element.inlineStyle("display"));
-        return done();
+        done();
       });
     });
 
-    return it("hides element when false", function(done) {
+    it("hides element when false", function(done) {
       this.viewmodel.on(false);
-      return delay(() => {
+      delay(() => {
         assert.equal("none", this.element.inlineStyle("display"));
-        return done();
+        done();
       });
     });
   });
@@ -233,23 +233,23 @@ describe("bindings", function() {
     beforeEach(function() {
       const bindObject =
         {visible: 'on'};
-      return this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
+      this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
     });
 
     it("does not hide element when true", function(done) {
-      return delay(() => {
+      delay(() => {
         assert.equal("", this.element.inlineStyle("display"));
         // Fixing Manuel's tests: There is no inline style "display" when true
         // assert.equal("inline-block", this.element.inlineStyle("display"));
-        return done();
+        done();
       });
     });
 
-    return it("hides element when false", function(done) {
+    it("hides element when false", function(done) {
       this.viewmodel.on(false);
-      return delay(() => {
+      delay(() => {
         assert.equal("none", this.element.inlineStyle("display"));
-        return done();
+        done();
       });
     });
   });
@@ -258,23 +258,23 @@ describe("bindings", function() {
     beforeEach(function() {
       const bindObject =
         {unless: 'off'};
-      return this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
+      this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
     });
 
     it("does not hide element when true", function(done) {
-      return delay(() => {
+      delay(() => {
         assert.equal("", this.element.inlineStyle("display"));
         // Fixing Manuel's tests: There is no inline style "display" when true
         // assert.equal("inline-block", this.element.inlineStyle("display"));
-        return done();
+        done();
       });
     });
 
-    return it("hides element when false", function(done) {
+    it("hides element when false", function(done) {
       this.viewmodel.off(true);
-      return delay(() => {
+      delay(() => {
         assert.equal("none", this.element.inlineStyle("display"));
-        return done();
+        done();
       });
     });
   });
@@ -283,23 +283,23 @@ describe("bindings", function() {
     beforeEach(function() {
       const bindObject =
         {hide: 'off'};
-      return this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
+      this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
     });
 
     it("does not hide element when true", function(done) {
-      return delay(() => {
+      delay(() => {
         assert.equal("", this.element.inlineStyle("display"));
         // Fixing Manuel's tests: There is no inline style "display" when true
         // assert.equal("inline-block", this.element.inlineStyle("display"));
-        return done();
+        done();
       });
     });
 
-    return it("hides element when false", function(done) {
+    it("hides element when false", function(done) {
       this.viewmodel.off(true);
-      return delay(() => {
+      delay(() => {
         assert.equal("none", this.element.inlineStyle("display"));
-        return done();
+        done();
       });
     });
   });
@@ -308,14 +308,14 @@ describe("bindings", function() {
     beforeEach(function() {
       const bindObject =
         {text: 'name'};
-      return this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
+      this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
     });
 
-    return it("sets from vm", function(done) {
+    it("sets from vm", function(done) {
       this.viewmodel.name('X');
-      return delay(() => {
+      delay(() => {
         assert.equal("X", this.element.text());
-        return done();
+        done();
       });
     });
   });
@@ -324,14 +324,14 @@ describe("bindings", function() {
     beforeEach(function() {
       const bindObject =
         {html: 'name'};
-      return this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
+      this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
     });
 
-    return it("sets from vm", function(done) {
+    it("sets from vm", function(done) {
       this.viewmodel.name('X');
-      return delay(() => {
+      delay(() => {
         assert.equal("X", this.element.html());
-        return done();
+        done();
       });
     });
   });
@@ -343,22 +343,22 @@ describe("bindings", function() {
         {change: 'name'};
       this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
       this.element.trigger('change');
-      return delay(() => {
+      delay(() => {
         assert.isTrue(this.viewmodel.name() instanceof jQuery.Event);
-        return done();
+        done();
       });
     });
 
-    return it("uses other bindings", function(done) {
+    it("uses other bindings", function(done) {
       const bindObject = {
         value: 'name',
         change: 'on'
       };
       this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
       this.element.trigger('change');
-      return delay(() => {
+      delay(() => {
         assert.isFalse(this.viewmodel.name() instanceof jQuery.Event);
-        return done();
+        done();
       });
     });
   });
@@ -367,16 +367,16 @@ describe("bindings", function() {
     beforeEach(function() {
       const bindObject =
         {enter: "changeName('X')"};
-      return this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
+      this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
     });
 
     it("uses e.which", function(done) {
       const e = jQuery.Event("keyup");
       e.which = 13;
       this.element.trigger(e);
-      return delay(() => {
+      delay(() => {
         assert.equal('X', this.viewmodel.name());
-        return done();
+        done();
       });
     });
 
@@ -384,18 +384,18 @@ describe("bindings", function() {
       const e = jQuery.Event("keyup");
       e.keyCode = 13;
       this.element.trigger(e);
-      return delay(() => {
+      delay(() => {
         assert.equal('X', this.viewmodel.name());
-        return done();
+        done();
       });
     });
 
-    return it("doesn't do anything without key", function(done) {
+    it("doesn't do anything without key", function(done) {
       const e = jQuery.Event("keyup");
       this.element.trigger(e);
-      return delay(() => {
+      delay(() => {
         assert.equal('', this.viewmodel.name());
-        return done();
+        done();
       });
     });
   });
@@ -408,17 +408,17 @@ describe("bindings", function() {
           viewBox: 'on'
         }
       };
-      return this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
+      this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
     });
 
-    return it("sets from vm", function(done) {
+    it("sets from vm", function(done) {
       this.viewmodel.name('X');
       this.viewmodel.on('Y');
       this.viewmodel.viewBox;
-      return delay(() => {
+      delay(() => {
         assert.equal('X', this.element.attr('title'));
         assert.equal('Y', this.element[0].getAttribute('viewBox'));
-        return done();
+        done();
       });
     });
   });
@@ -432,21 +432,21 @@ describe("bindings", function() {
         {href: 'on'};
       this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
       this.viewmodel.on('Y');
-      return delay(() => {
+      delay(() => {
         assert.equal('Y', this.element.attr('href'));
-        return done();
+        done();
       });
     });
 
-    return it("sets from string", function(done) {
+    it("sets from string", function(done) {
       ViewModel.addAttributeBinding( 'src' );
       const bindObject =
         {src: 'on'};
       this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
       this.viewmodel.on('Y');
-      return delay(() => {
+      delay(() => {
         assert.equal('Y', this.element.attr('src'));
-        return done();
+        done();
       });
     });
   });
@@ -457,31 +457,31 @@ describe("bindings", function() {
       const bindObject =
         {check: 'on'};
       this.element = $("<input type='checkbox'>");
-      return this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
+      this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
     });
 
     it("has default value", function(done) {
-      return delay(() => {
+      delay(() => {
         assert.isTrue(this.element.is(':checked'));
         assert.isTrue(this.viewmodel.on());
-        return done();
+        done();
       });
     });
 
     it("sets value from vm", function(done) {
       this.viewmodel.on(false);
-      return delay(() => {
+      delay(() => {
         assert.isFalse(this.element.is(':checked'));
-        return done();
+        done();
       });
     });
 
-    return it("sets value from element", function(done) {
+    it("sets value from element", function(done) {
       this.element.prop('checked', false);
       this.element.trigger('change');
-      return delay(() => {
+      delay(() => {
         assert.isFalse(this.viewmodel.on());
-        return done();
+        done();
       });
     });
   });
@@ -491,31 +491,31 @@ describe("bindings", function() {
       const bindObject =
         {group: 'array'};
       this.element = $("<input type='checkbox' value='A'>");
-      return this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
+      this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
     });
 
     it("has default value", function(done) {
-      return delay(() => {
+      delay(() => {
         assert.equal(0, this.viewmodel.array().length);
         assert.isFalse(this.element.is(':checked'));
-        return done();
+        done();
       });
     });
 
     it("sets value from vm", function(done) {
       this.viewmodel.array().push('A');
-      return delay(() => {
+      delay(() => {
         assert.isTrue(this.element.is(':checked'));
-        return done();
+        done();
       });
     });
 
-    return it("sets value from element", function(done) {
+    it("sets value from element", function(done) {
       this.element.prop('checked', true);
       this.element.trigger('change');
-      return delay(() => {
+      delay(() => {
         assert.equal(1, this.viewmodel.array().length);
-        return done();
+        done();
       });
     });
   });
@@ -525,41 +525,41 @@ describe("bindings", function() {
       const bindObject =
         {group: 'name'};
       this.element = $("<input type='radio' value='A' name='B'>");
-      return this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
+      this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
     });
 
     it("has default value", function(done) {
-      return delay(() => {
+      delay(() => {
         assert.equal('', this.viewmodel.name());
         assert.isFalse(this.element.is(':checked'));
-        return done();
+        done();
       });
     });
 
     it("sets value from vm", function(done) {
       this.viewmodel.name('A');
-      return delay(() => {
+      delay(() => {
         assert.isTrue(this.element.is(':checked'));
-        return done();
+        done();
       });
     });
 
-    return it("sets value from element", function(done) {
+    it("sets value from element", function(done) {
       let triggeredChange = false;
       this.templateInstance.$ = () => ({
-        each() { return triggeredChange = true; }
+        each() { triggeredChange = true; }
       });
       this.element.prop('checked', true);
       this.element.trigger('change');
-      return delay(() => {
+      delay(() => {
         assert.equal('A', this.viewmodel.name());
         assert.isTrue(triggeredChange);
-        return done();
+        done();
       });
     });
   });
 
-  return describe("style", function() {
+  describe("style", function() {
     it("removes the style from string", function(done) {
       const bindObject =
         {style: "styleLabel"};
@@ -572,9 +572,9 @@ describe("bindings", function() {
       delay(() => {
         assert.equal("red", this.element[0].style.color);
         this.viewmodel.styleLabel({ color: null });
-        return delay(() => {
+        delay(() => {
           assert.equal("", this.element[0].style.color);
-          return done();
+          done();
         });
       });
     });
@@ -591,9 +591,9 @@ describe("bindings", function() {
       delay(() => {
         assert.equal("red", this.element[0].style.color);
         this.viewmodel.color(null);
-        return delay(() => {
+        delay(() => {
           assert.equal("", this.element[0].style.color);
-          return done();
+          done();
         });
       });
     });
@@ -607,7 +607,7 @@ describe("bindings", function() {
       this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
       delay(() => {
         assert.equal("red", this.element.inlineStyle("color"));
-        return done();
+        done();
       });
     });
 
@@ -624,7 +624,7 @@ describe("bindings", function() {
       this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
       delay(() => {
         assert.equal("red", this.element.inlineStyle("color"));
-        return done();
+        done();
       });
     });
 
@@ -636,7 +636,7 @@ describe("bindings", function() {
       this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
       delay(() => {
         assert.equal("red", this.element.inlineStyle("color"));
-        return done();
+        done();
       });
     });
 
@@ -649,7 +649,7 @@ describe("bindings", function() {
       delay(() => {
         assert.equal("red", this.element.inlineStyle("color"));
         assert.equal("blue", this.element.inlineStyle("border-color"));
-        return done();
+        done();
       });
     });
 
@@ -662,7 +662,7 @@ describe("bindings", function() {
       delay(() => {
         assert.equal("red", this.element.inlineStyle("color"));
         assert.equal("blue", this.element.inlineStyle("border-color"));
-        return done();
+        done();
       });
     });
 
@@ -683,11 +683,11 @@ describe("bindings", function() {
       delay(() => {
         assert.equal("red", this.element.inlineStyle("color"));
         assert.equal("10px", this.element.inlineStyle("height"));
-        return done();
+        done();
       });
     });
 
-    return it("removes the style from array", function(done) {
+    it("removes the style from array", function(done) {
       const bindObject =
         {style: "[styles.label]"};
       this.viewmodel.load({
@@ -701,9 +701,9 @@ describe("bindings", function() {
       delay(() => {
         assert.equal("red", this.element.inlineStyle("color"));
         this.viewmodel.styles({ label: { color: null } });
-        return delay(() => {
+        delay(() => {
           assert.equal("", this.element[0].style.color);
-          return done();
+          done();
         });
       });
     });
