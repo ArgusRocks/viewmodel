@@ -211,9 +211,11 @@ describe("bindings", function() {
       return this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
     });
 
-    it("hides element when true", function(done) {
+    it("does not hide element when true", function(done) {
       return delay(() => {
-        assert.equal("inline-block", this.element.inlineStyle("display"));
+        assert.equal("", this.element.inlineStyle("display"));
+        // Fixing Manuel's tests: There is no inline style "display" when true
+        // assert.equal("inline-block", this.element.inlineStyle("display"));
         return done();
       });
     });
@@ -234,9 +236,11 @@ describe("bindings", function() {
       return this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
     });
 
-    it("hides element when true", function(done) {
+    it("does not hide element when true", function(done) {
       return delay(() => {
-        assert.equal("inline-block", this.element.inlineStyle("display"));
+        assert.equal("", this.element.inlineStyle("display"));
+        // Fixing Manuel's tests: There is no inline style "display" when true
+        // assert.equal("inline-block", this.element.inlineStyle("display"));
         return done();
       });
     });
@@ -257,9 +261,11 @@ describe("bindings", function() {
       return this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
     });
 
-    it("hides element when true", function(done) {
+    it("does not hide element when true", function(done) {
       return delay(() => {
-        assert.equal("inline-block", this.element.inlineStyle("display"));
+        assert.equal("", this.element.inlineStyle("display"));
+        // Fixing Manuel's tests: There is no inline style "display" when true
+        // assert.equal("inline-block", this.element.inlineStyle("display"));
         return done();
       });
     });
@@ -280,9 +286,11 @@ describe("bindings", function() {
       return this.viewmodel.bind(bindObject, this.templateInstance, this.element, ViewModel.bindings);
     });
 
-    it("hides element when true", function(done) {
+    it("does not hide element when true", function(done) {
       return delay(() => {
-        assert.equal("inline-block", this.element.inlineStyle("display"));
+        assert.equal("", this.element.inlineStyle("display"));
+        // Fixing Manuel's tests: There is no inline style "display" when true
+        // assert.equal("inline-block", this.element.inlineStyle("display"));
         return done();
       });
     });
