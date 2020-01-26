@@ -2,7 +2,7 @@ Package.describe({
   name: "manuel:viewmodel",
   summary:
     "MVVM, two-way data binding, and components for Meteor. Similar to Angular and Knockout.",
-  version: "6.3.8",
+  version: "7.0.0",
   git: "https://github.com/ManuelDeLeon/viewmodel"
 });
 
@@ -11,11 +11,10 @@ var CLIENT = "client";
 Package.onUse(function(api) {
   api.use(
     [
-      "coffeescript@2.0.3_4",
       "ecmascript@0.1.6",
       "blaze@2.1.2",
       "templating@1.1.1",
-      "jquery@1.11.3_2",
+      "jquery@3.0.0",
       "underscore@1.0.3",
       "tracker@1.0.7",
       "reload@1.1.3",
@@ -30,12 +29,12 @@ Package.onUse(function(api) {
 
   api.addFiles(
     [
-      "lib/viewmodel.coffee",
-      "lib/viewmodel-parseBind.coffee",
-      "lib/bindings.coffee",
-      "lib/template.coffee",
-      "lib/migration.coffee",
-      "lib/viewmodel-onUrl.coffee",
+      "lib/viewmodel.js",
+      "lib/viewmodel-parseBind.js",
+      "lib/bindings.js",
+      "lib/template.js",
+      "lib/migration.js",
+      "lib/viewmodel-onUrl.js",
       "lib/viewmodel-property.js",
       "lib/lzstring.js"
     ],
@@ -46,48 +45,27 @@ Package.onUse(function(api) {
 });
 
 Package.onTest(function(api) {
+  api.use('ecmascript');
   api.use(
     [
-      "coffeescript",
       "ecmascript",
       "blaze",
       "templating",
-      "jquery",
+      "jquery@3.0.0",
       "underscore",
       "tracker",
       "reload",
       "sha",
       "reactive-dict",
       "manuel:reactivearray",
-      "cultofcoders:mocha",
-      "practicalmeteor:sinon",
-      "practicalmeteor:chai",
+      "meteortesting:mocha",
       "manuel:isdev"
     ],
     CLIENT
   );
 
-  api.addFiles(
-    [
-      "lib/viewmodel.coffee",
-      "lib/viewmodel-parseBind.coffee",
-      "lib/viewmodel-property.js",
-      "lib/bindings.coffee",
-      "lib/template.coffee",
-      "lib/migration.coffee",
-      "tests/jquery-patch.js",
-      "tests/sinon-restore.js",
-      "tests/bindings.coffee",
-      "tests/viewmodel.coffee",
-      "tests/viewmodel-instance.coffee",
-      "tests/viewmodel-check.coffee",
-      "tests/viewmodel-parseBind.coffee",
-      "tests/viewmodel-property.coffee",
 
-      "tests/template.coffee"
-    ],
-    CLIENT
-  );
+  api.mainModule('tests/tests.js', 'client');
 
   api.export(["ViewModel"], CLIENT);
 });
