@@ -1,77 +1,99 @@
-describe "Template", ->
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+describe("Template", function() {
 
-  beforeEach ->
-    @checkStub = sinon.stub ViewModel, "check"
-    @vmOnCreatedStub = sinon.stub ViewModel, "onCreated"
-    @vmOnRenderedStub = sinon.stub ViewModel, "onRendered"
-    @vmOnDestroyedStub = sinon.stub ViewModel, "onDestroyed"
+  beforeEach(function() {
+    this.checkStub = sinon.stub(ViewModel, "check");
+    this.vmOnCreatedStub = sinon.stub(ViewModel, "onCreated");
+    this.vmOnRenderedStub = sinon.stub(ViewModel, "onRendered");
+    return this.vmOnDestroyedStub = sinon.stub(ViewModel, "onDestroyed");
+  });
 
-  afterEach ->
-    sinon.restoreAll()
+  afterEach(() => sinon.restoreAll());
 
-  describe "#viewmodel", ->
-    beforeEach ->
-      @context =
-        onCreated: ->
-        onRendered: ->
-        onDestroyed: ->
-      @templateOnCreatedStub = sinon.stub(@context, "onCreated")
-      @templateOnRenderedStub = sinon.stub(@context, "onRendered")
-      @templateOnDestroyedStub = sinon.stub(@context, "onDestroyed")
+  describe("#viewmodel", function() {
+    beforeEach(function() {
+      this.context = {
+        onCreated() {},
+        onRendered() {},
+        onDestroyed() {}
+      };
+      this.templateOnCreatedStub = sinon.stub(this.context, "onCreated");
+      this.templateOnRenderedStub = sinon.stub(this.context, "onRendered");
+      return this.templateOnDestroyedStub = sinon.stub(this.context, "onDestroyed");
+    });
 
-    it "checks the arguments", ->
-      Template.prototype.viewmodel.call @context, "X"
-      assert.isTrue @checkStub.calledWithExactly 'T#viewmodel', "X", @context
+    it("checks the arguments", function() {
+      Template.prototype.viewmodel.call(this.context, "X");
+      return assert.isTrue(this.checkStub.calledWithExactly('T#viewmodel', "X", this.context));
+    });
 
-    it "saves the initial object", ->
-      Template.prototype.viewmodel.call @context, "X"
-      assert.equal "X", @context.viewmodelInitial
+    it("saves the initial object", function() {
+      Template.prototype.viewmodel.call(this.context, "X");
+      return assert.equal("X", this.context.viewmodelInitial);
+    });
 
-    it "adds onCreated", ->
-      @vmOnCreatedStub.returns "Y"
-      Template.prototype.viewmodel.call @context, "X"
-      assert.isTrue @vmOnCreatedStub.calledWithExactly(@context, "X")
-      assert.isTrue @templateOnCreatedStub.calledWithExactly("Y")
+    it("adds onCreated", function() {
+      this.vmOnCreatedStub.returns("Y");
+      Template.prototype.viewmodel.call(this.context, "X");
+      assert.isTrue(this.vmOnCreatedStub.calledWithExactly(this.context, "X"));
+      return assert.isTrue(this.templateOnCreatedStub.calledWithExactly("Y"));
+    });
 
-    it "adds onRendered", ->
-      @vmOnRenderedStub.returns "Y"
-      Template.prototype.viewmodel.call @context, "X"
-      assert.isTrue @vmOnRenderedStub.calledWithExactly("X")
-      assert.isTrue @templateOnRenderedStub.calledWithExactly("Y")
+    it("adds onRendered", function() {
+      this.vmOnRenderedStub.returns("Y");
+      Template.prototype.viewmodel.call(this.context, "X");
+      assert.isTrue(this.vmOnRenderedStub.calledWithExactly("X"));
+      return assert.isTrue(this.templateOnRenderedStub.calledWithExactly("Y"));
+    });
 
-    it "adds onDestroyed", ->
-      @vmOnDestroyedStub.returns "Y"
-      Template.prototype.viewmodel.call @context, "X"
-      assert.isTrue @vmOnDestroyedStub.called
-      assert.isTrue @templateOnDestroyedStub.calledWithExactly("Y")
+    it("adds onDestroyed", function() {
+      this.vmOnDestroyedStub.returns("Y");
+      Template.prototype.viewmodel.call(this.context, "X");
+      assert.isTrue(this.vmOnDestroyedStub.called);
+      return assert.isTrue(this.templateOnDestroyedStub.calledWithExactly("Y"));
+    });
       
-    it "returns undefined", ->
-      assert.isUndefined Template.prototype.viewmodel.call(@context, "X")
+    it("returns undefined", function() {
+      return assert.isUndefined(Template.prototype.viewmodel.call(this.context, "X"));
+    });
 
-    it "adds the events", ->
-      called = []
-      initial =
-        events:
-          a: null
+    return it("adds the events", function() {
+      const called = [];
+      const initial = {
+        events: {
+          a: null,
           b: null
-      @context.events = (eventObj) -> called.push eventObj
-      Template.prototype.viewmodel.call @context, initial
-      assert.isFunction called[0].a
-      assert.isFunction called[1].b
-      assert.equal called.length, 2
+        }
+      };
+      this.context.events = eventObj => called.push(eventObj);
+      Template.prototype.viewmodel.call(this.context, initial);
+      assert.isFunction(called[0].a);
+      assert.isFunction(called[1].b);
+      return assert.equal(called.length, 2);
+    });
+  });
 
-  describe "#createViewModel", ->
-    beforeEach ->
-      @createViewModel = Template.prototype.createViewModel
-      @getInitialObjectStub = sinon.stub ViewModel, 'getInitialObject'
-      @getInitialObjectStub.returns "X"
-      @template =
-        viewmodelInitial: "A"
+  return describe("#createViewModel", function() {
+    beforeEach(function() {
+      this.createViewModel = Template.prototype.createViewModel;
+      this.getInitialObjectStub = sinon.stub(ViewModel, 'getInitialObject');
+      this.getInitialObjectStub.returns("X");
+      return this.template =
+        {viewmodelInitial: "A"};
+    });
 
-    it "calls getInitialObject", ->
-      @createViewModel.call @template, "B"
-      assert.isTrue @getInitialObjectStub.calledWith("A", "B")
+    it("calls getInitialObject", function() {
+      this.createViewModel.call(this.template, "B");
+      return assert.isTrue(this.getInitialObjectStub.calledWith("A", "B"));
+    });
 
-    it "returns a view model", ->
-      vm = @createViewModel.call @template, "B"
-      assert.isTrue vm instanceof ViewModel
+    return it("returns a view model", function() {
+      const vm = this.createViewModel.call(this.template, "B");
+      return assert.isTrue(vm instanceof ViewModel);
+    });
+  });
+});

@@ -1,14 +1,19 @@
-describe "ViewModel", ->
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+describe("ViewModel", function() {
 
-  beforeEach ->
-    @checkStub = sinon.stub ViewModel, "check"
+  beforeEach(function() {
+    return this.checkStub = sinon.stub(ViewModel, "check");
+  });
 
-  afterEach ->
-    sinon.restoreAll()
+  afterEach(() => sinon.restoreAll());
 
-  describe "@parseBind", ->
-
-    it "parses object", ->
-      obj = ViewModel.parseBind "text: name, full: first + ' ' + last"
-      assert.isTrue _.isEqual({ text: "name", full: "first + ' ' + last" }, obj)
+  return describe("@parseBind", () => it("parses object", function() {
+    const obj = ViewModel.parseBind("text: name, full: first + ' ' + last");
+    return assert.isTrue(_.isEqual({ text: "name", full: "first + ' ' + last" }, obj));
+  }));
+});
 

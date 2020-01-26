@@ -1,23 +1,28 @@
-describe "ViewModel", ->
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+describe("ViewModel", () => describe("@check", function() {
+  beforeEach(function() {
+    Package['manuel:viewmodel-debug'] =
+      {VmCheck() {}};
+    return this.vmCheckStub = sinon.stub(Package['manuel:viewmodel-debug'], "VmCheck");
+  });
 
-  describe "@check", ->
-    beforeEach ->
-      Package['manuel:viewmodel-debug'] =
-        VmCheck: ->
-      @vmCheckStub = sinon.stub Package['manuel:viewmodel-debug'], "VmCheck"
+  afterEach(() => sinon.restoreAll());
 
-    afterEach ->
-      sinon.restoreAll()
+  it("doesn't check if ignoreErrors is true", function() {
+    ViewModel.ignoreErrors = true;
+    ViewModel.check();
+    ViewModel.ignoreErrors = false;
+    return assert.isFalse(this.vmCheckStub.called);
+  });
 
-    it "doesn't check if ignoreErrors is true", ->
-      ViewModel.ignoreErrors = true
-      ViewModel.check()
-      ViewModel.ignoreErrors = false
-      assert.isFalse @vmCheckStub.called
+  it("calls VmCheck with parameters", function() {
+    ViewModel.check(1, 2, 3);
+    return assert.isTrue(this.vmCheckStub.calledWithExactly(1, 2, 3));
+  });
 
-    it "calls VmCheck with parameters", ->
-      ViewModel.check 1, 2, 3
-      assert.isTrue @vmCheckStub.calledWithExactly 1, 2, 3
-
-    it "returns undefined", ->
-      assert.isUndefined ViewModel.check()
+  return it("returns undefined", () => assert.isUndefined(ViewModel.check()));
+}));

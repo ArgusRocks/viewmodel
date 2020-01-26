@@ -1,1584 +1,1888 @@
-describe "ViewModel", ->
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+describe("ViewModel", function() {
 
-  beforeEach ->
-    @checkStub = sinon.stub ViewModel, "check"
-    @delay = ViewModel.delay
-    ViewModel.delay = (t, f) -> f()
+  beforeEach(function() {
+    this.checkStub = sinon.stub(ViewModel, "check");
+    this.delay = ViewModel.delay;
+    return ViewModel.delay = (t, f) => f();
+  });
 
-  afterEach ->
-    sinon.restoreAll()
-    ViewModel.delay = @delay
+  afterEach(function() {
+    sinon.restoreAll();
+    return ViewModel.delay = this.delay;
+  });
 
-  describe "@nextId", ->
-    it "increments the numbers", ->
-      a = ViewModel.nextId()
-      b = ViewModel.nextId()
-      assert.equal b, a + 1
+  describe("@nextId", () => it("increments the numbers", function() {
+    const a = ViewModel.nextId();
+    const b = ViewModel.nextId();
+    return assert.equal(b, a + 1);
+  }));
 
-  describe "@reserved", ->
-    it "has reserved words", ->
-      assert.ok ViewModel.reserved.vmId
+  describe("@reserved", () => it("has reserved words", () => assert.ok(ViewModel.reserved.vmId)));
 
-  describe "@onDestroyed", ->
+  describe("@onDestroyed", function() {
 
-    it "returns a function", ->
-      assert.isFunction ViewModel.onDestroyed()
+    it("returns a function", () => assert.isFunction(ViewModel.onDestroyed()));
 
-    describe "return function", ->
-      beforeEach ->
-        @viewmodel =
-          vmId: 1
-          vmOnDestroyed: []
-          templateInstance:
-            view:
+    return describe("return function", function() {
+      beforeEach(function() {
+        this.viewmodel = {
+          vmId: 1,
+          vmOnDestroyed: [],
+          templateInstance: {
+            view: {
               name: 'Template.A'
-          parent: -> undefined
-        @instance =
-          autorun: (f) -> f()
-          viewmodel: @viewmodel
+            }
+          },
+          parent() { return undefined; }
+        };
+        return this.instance = {
+          autorun(f) { return f(); },
+          viewmodel: this.viewmodel
+        };
+      });
 
-      it "removes the view model from ViewModel.byId", ->
-        ViewModel.byId = {}
-        ViewModel.add @viewmodel
-        ViewModel.onDestroyed().call @instance
-        assert.isUndefined ViewModel.byId[1]
+      it("removes the view model from ViewModel.byId", function() {
+        ViewModel.byId = {};
+        ViewModel.add(this.viewmodel);
+        ViewModel.onDestroyed().call(this.instance);
+        return assert.isUndefined(ViewModel.byId[1]);
+    });
 
-      it "removes the view model from ViewModel.byTemplate", ->
-        ViewModel.byTemplate = {}
-        ViewModel.add @viewmodel
-        assert.ok ViewModel.byTemplate['A'][1]
-        ViewModel.onDestroyed().call @instance
-        assert.isUndefined ViewModel.byTemplate['A'][1]
+      it("removes the view model from ViewModel.byTemplate", function() {
+        ViewModel.byTemplate = {};
+        ViewModel.add(this.viewmodel);
+        assert.ok(ViewModel.byTemplate['A'][1]);
+        ViewModel.onDestroyed().call(this.instance);
+        return assert.isUndefined(ViewModel.byTemplate['A'][1]);
+    });
 
-      it "calls viewmodel.onDestroyed", ->
-        ran = false
-        @instance.viewmodel = new ViewModel
-          onDestroyed: -> ran = true
+      return it("calls viewmodel.onDestroyed", function() {
+        let ran = false;
+        this.instance.viewmodel = new ViewModel({
+          onDestroyed() { return ran = true; }});
 
-        @instance.viewmodel.templateInstance =
-          view:
+        this.instance.viewmodel.templateInstance = {
+          view: {
             name: 'Template.A'
+          }
+        };
 
-        ViewModel.onDestroyed({}).call @instance
-        assert.isTrue ran
+        ViewModel.onDestroyed({}).call(this.instance);
+        return assert.isTrue(ran);
+      });
+    });
+  });
 
-  describe "@onRendered", ->
+  describe("@onRendered", function() {
 
-    it "returns a function", ->
-      assert.isFunction ViewModel.onRendered()
+    it("returns a function", () => assert.isFunction(ViewModel.onRendered()));
 
-    describe "return function", ->
-      afterFlush = Tracker.afterFlush
-      beforeEach ->
-        @viewmodel = new ViewModel()
-        @viewmodel.vmInitial = {}
-        @instance =
-          autorun: (f) -> f()
-          viewmodel: @viewmodel
-        afterFlush = Tracker.afterFlush
-        Tracker.afterFlush = (f) -> f()
+    return describe("return function", function() {
+      let {
+        afterFlush
+      } = Tracker;
+      beforeEach(function() {
+        this.viewmodel = new ViewModel();
+        this.viewmodel.vmInitial = {};
+        this.instance = {
+          autorun(f) { return f(); },
+          viewmodel: this.viewmodel
+        };
+        ({
+          afterFlush
+        } = Tracker);
+        return Tracker.afterFlush = f => f();
+      });
 
-      afterEach ->
-        Tracker.afterFlush = afterFlush
+      afterEach(() => Tracker.afterFlush = afterFlush);
 
-      it "checks the arguments", ->
-        @viewmodel.vmInitial.autorun = "X"
-        ViewModel.onRendered().call @instance
-        assert.isTrue @checkStub.calledWithExactly('@onRendered', "X", @instance)
+      it("checks the arguments", function() {
+        this.viewmodel.vmInitial.autorun = "X";
+        ViewModel.onRendered().call(this.instance);
+        return assert.isTrue(this.checkStub.calledWithExactly('@onRendered', "X", this.instance));
+      });
 
-      it "sets autorun for single function", ->
-        ran = false
-        @viewmodel.vmAutorun.push -> ran = true
-        ViewModel.onRendered().call @instance
-        assert.isTrue ran
+      it("sets autorun for single function", function() {
+        let ran = false;
+        this.viewmodel.vmAutorun.push(() => ran = true);
+        ViewModel.onRendered().call(this.instance);
+        return assert.isTrue(ran);
+      });
 
-      it "calls viewmodel.onRendered", ->
-        ran = false
-        @viewmodel.vmOnRendered.push -> ran = true
-        ViewModel.onRendered().call @instance
-        assert.isTrue ran
+      return it("calls viewmodel.onRendered", function() {
+        let ran = false;
+        this.viewmodel.vmOnRendered.push(() => ran = true);
+        ViewModel.onRendered().call(this.instance);
+        return assert.isTrue(ran);
+      });
+    });
+  });
 
 
 
-  describe "@onCreated", ->
+  describe("@onCreated", function() {
 
-    it "returns a function", ->
-      assert.isFunction ViewModel.onCreated()
+    it("returns a function", () => assert.isFunction(ViewModel.onCreated()));
 
-    describe "return function", ->
+    return describe("return function", function() {
 
-      beforeEach ->
+      beforeEach(function() {
 
-        @helper = null
-        @template =
-          createViewModel: ->
-            vm = new ViewModel()
-            vm.vmId = 1
-            vm.id = ->
-            return vm
-          helpers: (obj) => @helper = obj
+        this.helper = null;
+        this.template = {
+          createViewModel() {
+            const vm = new ViewModel();
+            vm.vmId = 1;
+            vm.id = function() {};
+            return vm;
+          },
+          helpers: obj => { return this.helper = obj; }
+        };
 
-        @assignChildStub = sinon.stub ViewModel, 'assignChild'
-        @retFun = ViewModel.onCreated(@template)
-        @helpersSpy = sinon.spy @template, 'helpers'
-        @currentDataStub = sinon.stub Template , 'currentData'
-        @afterFlushStub = sinon.stub Tracker, 'afterFlush'
-        @instance =
-          data: "A"
-          autorun: (f) -> f( { firstRun: true })
-          view:
+        this.assignChildStub = sinon.stub(ViewModel, 'assignChild');
+        this.retFun = ViewModel.onCreated(this.template);
+        this.helpersSpy = sinon.spy(this.template, 'helpers');
+        this.currentDataStub = sinon.stub(Template , 'currentData');
+        this.afterFlushStub = sinon.stub(Tracker, 'afterFlush');
+        return this.instance = {
+          data: "A",
+          autorun(f) { return f( { firstRun: true }); },
+          view: {
             name: 'body'
+          }
+        };
+      });
 
-      it "sets the viewmodel property on the template instance", ->
-        @retFun.call @instance
-        assert.isTrue @instance.viewmodel instanceof ViewModel
+      it("sets the viewmodel property on the template instance", function() {
+        this.retFun.call(this.instance);
+        return assert.isTrue(this.instance.viewmodel instanceof ViewModel);
+      });
 
-      it "adds the viewmodel to ViewModel.byId", ->
-        ViewModel.byId = {}
-        @retFun.call @instance
-        assert.equal @instance.viewmodel, ViewModel.byId[@instance.viewmodel.vmId]
+      it("adds the viewmodel to ViewModel.byId", function() {
+        ViewModel.byId = {};
+        this.retFun.call(this.instance);
+        return assert.equal(this.instance.viewmodel, ViewModel.byId[this.instance.viewmodel.vmId]);
+    });
 
-      it "adds the viewmodel to ViewModel.byTemplate", ->
-        ViewModel.byTemplate = {}
-        @retFun.call @instance
-        assert.equal @instance.viewmodel, ViewModel.byTemplate['body'][@instance.viewmodel.vmId]
+      it("adds the viewmodel to ViewModel.byTemplate", function() {
+        ViewModel.byTemplate = {};
+        this.retFun.call(this.instance);
+        return assert.equal(this.instance.viewmodel, ViewModel.byTemplate['body'][this.instance.viewmodel.vmId]);
+    });
 
-      it "adds templateInstance to the view model", ->
-        @retFun.call @instance
-        assert.equal @instance.viewmodel.templateInstance, @instance
+      it("adds templateInstance to the view model", function() {
+        this.retFun.call(this.instance);
+        return assert.equal(this.instance.viewmodel.templateInstance, this.instance);
+      });
 
-      it "adds view model properties as helpers", ->
-        @retFun.call @instance
-        assert.ok @helper.id
+      it("adds view model properties as helpers", function() {
+        this.retFun.call(this.instance);
+        return assert.ok(this.helper.id);
+      });
 
-      it "doesn't add reserved words as helpers", ->
-        @retFun.call @instance
-        assert.notOk @helper.vmId
+      it("doesn't add reserved words as helpers", function() {
+        this.retFun.call(this.instance);
+        return assert.notOk(this.helper.vmId);
+      });
 
-      it "extends the view model with the data context", ->
-        cache = Tracker.afterFlush
-        Tracker.afterFlush = (f) -> f()
-        @instance.data =
-          name: 'Alan'
-        @currentDataStub.returns @instance.data
-        @retFun.call @instance
-        Tracker.afterFlush = cache
-        assert.equal 'Alan', @instance.viewmodel.name()
+      it("extends the view model with the data context", function() {
+        const cache = Tracker.afterFlush;
+        Tracker.afterFlush = f => f();
+        this.instance.data =
+          {name: 'Alan'};
+        this.currentDataStub.returns(this.instance.data);
+        this.retFun.call(this.instance);
+        Tracker.afterFlush = cache;
+        return assert.equal('Alan', this.instance.viewmodel.name());
+      });
 
-      it "assigns viewmodel as child of the parent", ->
-        cache = Tracker.afterFlush
-        Tracker.afterFlush = (f) -> f()
-        @retFun.call @instance
-        Tracker.afterFlush = cache
-        assert.isTrue @assignChildStub.calledWithExactly @instance.viewmodel
+      return it("assigns viewmodel as child of the parent", function() {
+        const cache = Tracker.afterFlush;
+        Tracker.afterFlush = f => f();
+        this.retFun.call(this.instance);
+        Tracker.afterFlush = cache;
+        return assert.isTrue(this.assignChildStub.calledWithExactly(this.instance.viewmodel));
+      });
+    });
+  });
 
 
 
-  describe "@bindIdAttribute", ->
-    it "has has default value", ->
-      assert.equal "b-id", ViewModel.bindIdAttribute
+  describe("@bindIdAttribute", () => it("has has default value", () => assert.equal("b-id", ViewModel.bindIdAttribute)));
 
-  describe "@eventHelper", ->
-    beforeEach ->
-      @nextIdStub = sinon.stub ViewModel, 'nextId'
-      @nextIdStub.returns 99
-      @onViewReadyFunction = null
-      Blaze.currentView =
-        onViewReady: (f) => @onViewReadyFunction = f
+  describe("@eventHelper", function() {
+    beforeEach(function() {
+      this.nextIdStub = sinon.stub(ViewModel, 'nextId');
+      this.nextIdStub.returns(99);
+      this.onViewReadyFunction = null;
+      return Blaze.currentView =
+        {onViewReady: f => { return this.onViewReadyFunction = f; }};
+    });
 
-    it "returns object with the next bind id", ->
-      instanceStub = sinon.stub Template, 'instance'
-      templateInstance =
-        viewmodel: {}
-        '$': -> "X"
-      instanceStub.returns templateInstance
-      ret = ViewModel.eventHelper()
-      assert.equal ret[ViewModel.bindIdAttribute + '-e'], 99
+    return it("returns object with the next bind id", function() {
+      const instanceStub = sinon.stub(Template, 'instance');
+      const templateInstance = {
+        viewmodel: {},
+        '$'() { return "X"; }
+      };
+      instanceStub.returns(templateInstance);
+      const ret = ViewModel.eventHelper();
+      return assert.equal(ret[ViewModel.bindIdAttribute + '-e'], 99);
+    });
+  });
 
-  describe "@bindHelper", ->
-    beforeEach ->
-      @nextIdStub = sinon.stub ViewModel, 'nextId'
-      @nextIdStub.returns 99
-      @onViewReadyFunction = null
-      Blaze.currentView =
-        onViewReady: (f) => @onViewReadyFunction = f
-        _templateInstance:
-          '$': -> 'X'
+  describe("@bindHelper", function() {
+    beforeEach(function() {
+      this.nextIdStub = sinon.stub(ViewModel, 'nextId');
+      this.nextIdStub.returns(99);
+      this.onViewReadyFunction = null;
+      return Blaze.currentView = {
+        onViewReady: f => { return this.onViewReadyFunction = f; },
+        _templateInstance: {
+          '$'() { return 'X'; }
+        }
+      };
+    });
 
-    it "returns object with the next bind id", ->
-      instanceStub = sinon.stub Template, 'instance'
-      templateInstance =
-        viewmodel: {}
-        '$': -> "X"
-      instanceStub.returns templateInstance
-      ret = ViewModel.bindHelper()
-      assert.equal ret[ViewModel.bindIdAttribute], 99
+    it("returns object with the next bind id", function() {
+      const instanceStub = sinon.stub(Template, 'instance');
+      const templateInstance = {
+        viewmodel: {},
+        '$'() { return "X"; }
+      };
+      instanceStub.returns(templateInstance);
+      const ret = ViewModel.bindHelper();
+      return assert.equal(ret[ViewModel.bindIdAttribute], 99);
+    });
 
-    it "adds the binding to ViewModel.bindObjects", ->
-      viewmodel = new ViewModel()
-      instanceStub = sinon.stub Template, 'instance'
-      parseBindStub = sinon.stub ViewModel, 'parseBind'
-      bindObject =
-        text: 'name'
-      parseBindStub.returns bindObject
-      templateInstance =
-        viewmodel: viewmodel
-        '$': -> "X"
-      instanceStub.returns templateInstance
-      ViewModel.bindHelper("text: name")
-      assert.equal ViewModel.bindObjects[99], bindObject
+    it("adds the binding to ViewModel.bindObjects", function() {
+      const viewmodel = new ViewModel();
+      const instanceStub = sinon.stub(Template, 'instance');
+      const parseBindStub = sinon.stub(ViewModel, 'parseBind');
+      const bindObject =
+        {text: 'name'};
+      parseBindStub.returns(bindObject);
+      const templateInstance = {
+        viewmodel,
+        '$'() { return "X"; }
+      };
+      instanceStub.returns(templateInstance);
+      ViewModel.bindHelper("text: name");
+      return assert.equal(ViewModel.bindObjects[99], bindObject);
+    });
 
-    it "adds a view model if the template doesn't have one", ->
-      addEmptyViewModelStub = sinon.stub ViewModel, 'addEmptyViewModel'
-      instanceStub = sinon.stub Template, 'instance'
-      templateInstance =
-        '$': -> "X"
-      instanceStub.returns templateInstance
-      ViewModel.bindHelper("text: name")
-      assert.isTrue addEmptyViewModelStub.calledWith templateInstance
+    return it("adds a view model if the template doesn't have one", function() {
+      const addEmptyViewModelStub = sinon.stub(ViewModel, 'addEmptyViewModel');
+      const instanceStub = sinon.stub(Template, 'instance');
+      const templateInstance =
+        {'$'() { return "X"; }};
+      instanceStub.returns(templateInstance);
+      ViewModel.bindHelper("text: name");
+      return assert.isTrue(addEmptyViewModelStub.calledWith(templateInstance));
+    });
+  });
 
-  describe "@getInitialObject", ->
-    it "returns initial when initial is an object", ->
-      initial = {}
-      context = "X"
-      ret = ViewModel.getInitialObject(initial, context)
-      assert.equal initial, ret
+  describe("@getInitialObject", function() {
+    it("returns initial when initial is an object", function() {
+      const initial = {};
+      const context = "X";
+      const ret = ViewModel.getInitialObject(initial, context);
+      return assert.equal(initial, ret);
+    });
 
-    it "returns the result of the function when initial is a function", ->
-      initial = (context) -> context + 1
-      context = 1
-      ret = ViewModel.getInitialObject(initial, context)
-      assert.equal 2, ret
+    return it("returns the result of the function when initial is a function", function() {
+      const initial = context => context + 1;
+      const context = 1;
+      const ret = ViewModel.getInitialObject(initial, context);
+      return assert.equal(2, ret);
+    });
+  });
 
-  describe "@makeReactiveProperty", ->
-    it "returns a function", ->
-      assert.isFunction ViewModel.makeReactiveProperty("X")
-    it "sets default value", ->
-      actual = ViewModel.makeReactiveProperty("X")
-      assert.equal "X", actual()
-    it "sets and gets values", ->
-      actual = ViewModel.makeReactiveProperty("X")
-      actual("Y")
-      assert.equal "Y", actual()
-    it "resets the value", ->
-      actual = ViewModel.makeReactiveProperty("X")
-      actual("Y")
-      actual.reset()
-      assert.equal "X", actual()
-    it "has depend and changed", ->
-      actual = ViewModel.makeReactiveProperty("X")
-      assert.isFunction actual.depend
-      assert.isFunction actual.changed
-    it "reactifies arrays", ->
-      actual = ViewModel.makeReactiveProperty([])
-      assert.ok actual().depend
-      assert.isTrue actual() instanceof Array
+  describe("@makeReactiveProperty", function() {
+    it("returns a function", () => assert.isFunction(ViewModel.makeReactiveProperty("X")));
+    it("sets default value", function() {
+      const actual = ViewModel.makeReactiveProperty("X");
+      return assert.equal("X", actual());
+    });
+    it("sets and gets values", function() {
+      const actual = ViewModel.makeReactiveProperty("X");
+      actual("Y");
+      return assert.equal("Y", actual());
+    });
+    it("resets the value", function() {
+      const actual = ViewModel.makeReactiveProperty("X");
+      actual("Y");
+      actual.reset();
+      return assert.equal("X", actual());
+    });
+    it("has depend and changed", function() {
+      const actual = ViewModel.makeReactiveProperty("X");
+      assert.isFunction(actual.depend);
+      return assert.isFunction(actual.changed);
+    });
+    it("reactifies arrays", function() {
+      const actual = ViewModel.makeReactiveProperty([]);
+      assert.ok(actual().depend);
+      return assert.isTrue(actual() instanceof Array);
+    });
 
-    it "resets arrays", ->
-      actual = ViewModel.makeReactiveProperty([1])
-      actual().push(2)
-      assert.equal 2, actual().length
-      actual.reset()
-      assert.equal 1, actual().length
-      assert.equal 1, actual()[0]
+    it("resets arrays", function() {
+      const actual = ViewModel.makeReactiveProperty([1]);
+      actual().push(2);
+      assert.equal(2, actual().length);
+      actual.reset();
+      assert.equal(1, actual().length);
+      return assert.equal(1, actual()[0]);
+  });
 
-    describe "delay", ->
-      beforeEach ->
-        @clock = sinon.useFakeTimers()
-        ViewModel.delay = @delay
-      afterEach ->
-        @clock.restore()
-        @delay = ViewModel.delay
+    describe("delay", function() {
+      beforeEach(function() {
+        this.clock = sinon.useFakeTimers();
+        return ViewModel.delay = this.delay;
+      });
+      afterEach(function() {
+        this.clock.restore();
+        return this.delay = ViewModel.delay;
+      });
 
-      it "delays values", ->
-        actual = ViewModel.makeReactiveProperty("X")
-        actual.delay = 10
-        actual("Y")
-        @clock.tick 8
-        assert.equal "X", actual()
-        @clock.tick 4
-        assert.equal "Y", actual()
-        return
+      return it("delays values", function() {
+        const actual = ViewModel.makeReactiveProperty("X");
+        actual.delay = 10;
+        actual("Y");
+        this.clock.tick(8);
+        assert.equal("X", actual());
+        this.clock.tick(4);
+        assert.equal("Y", actual());
+      });
+    });
 
-    describe "validations", ->
-      it "returns a function", ->
-        assert.isFunction ViewModel.makeReactiveProperty(ViewModel.property.string)
-      it "sets default value", ->
-        actual = ViewModel.makeReactiveProperty(ViewModel.property.string.default("X"))
-        assert.equal "X", actual()
-      it "sets and gets values", ->
-        actual = ViewModel.makeReactiveProperty(ViewModel.property.string.default("X"))
-        actual("Y")
-        assert.equal "Y", actual()
-      it "resets the value", ->
-        actual = ViewModel.makeReactiveProperty(ViewModel.property.string.default("X"))
-        actual("Y")
-        actual.reset()
-        assert.equal "X", actual()
+    return describe("validations", function() {
+      it("returns a function", () => assert.isFunction(ViewModel.makeReactiveProperty(ViewModel.property.string)));
+      it("sets default value", function() {
+        const actual = ViewModel.makeReactiveProperty(ViewModel.property.string.default("X"));
+        return assert.equal("X", actual());
+      });
+      it("sets and gets values", function() {
+        const actual = ViewModel.makeReactiveProperty(ViewModel.property.string.default("X"));
+        actual("Y");
+        return assert.equal("Y", actual());
+      });
+      it("resets the value", function() {
+        const actual = ViewModel.makeReactiveProperty(ViewModel.property.string.default("X"));
+        actual("Y");
+        actual.reset();
+        return assert.equal("X", actual());
+      });
 
-      it "reactifies arrays", ->
-        actual = ViewModel.makeReactiveProperty(ViewModel.property.array)
-        assert.ok actual().depend
-        assert.isTrue actual() instanceof Array
+      it("reactifies arrays", function() {
+        const actual = ViewModel.makeReactiveProperty(ViewModel.property.array);
+        assert.ok(actual().depend);
+        return assert.isTrue(actual() instanceof Array);
+      });
 
-      it "resets arrays", ->
-        actual = ViewModel.makeReactiveProperty(ViewModel.property.array.default([1]))
-        actual().push(2)
-        assert.equal 2, actual().length
-        actual.reset()
-        assert.equal 1, actual().length
-        assert.equal 1, actual()[0]
+      return it("resets arrays", function() {
+        const actual = ViewModel.makeReactiveProperty(ViewModel.property.array.default([1]));
+        actual().push(2);
+        assert.equal(2, actual().length);
+        actual.reset();
+        assert.equal(1, actual().length);
+        return assert.equal(1, actual()[0]);
+    });
+  });
+});
 
-  describe "@addBinding", ->
+  describe("@addBinding", function() {
 
-    last = 1
-    getBindingName = -> "test" + last++
+    let last = 1;
+    const getBindingName = () => "test" + last++;
 
-    it "checks the arguments", ->
-      ViewModel.addBinding "X"
-      assert.isTrue @checkStub.calledWithExactly('@addBinding', "X")
+    it("checks the arguments", function() {
+      ViewModel.addBinding("X");
+      return assert.isTrue(this.checkStub.calledWithExactly('@addBinding', "X"));
+    });
 
-    it "returns nothing", ->
-      ret = ViewModel.addBinding "X"
-      assert.isUndefined ret
+    it("returns nothing", function() {
+      const ret = ViewModel.addBinding("X");
+      return assert.isUndefined(ret);
+    });
 
-    it "adds the binding to @bindings", ->
-      name = getBindingName()
-      ViewModel.addBinding
-        name: name
-        bind: -> "X"
-      assert.equal 1, ViewModel.bindings[name].length
-      assert.equal "X", ViewModel.bindings[name][0].bind()
+    it("adds the binding to @bindings", function() {
+      const name = getBindingName();
+      ViewModel.addBinding({
+        name,
+        bind() { return "X"; }
+      });
+      assert.equal(1, ViewModel.bindings[name].length);
+      return assert.equal("X", ViewModel.bindings[name][0].bind());
+    });
 
-    it "adds the binding to @bindings array", ->
-      name = getBindingName()
-      ViewModel.addBinding
-        name: name
-        bind: -> "X"
-      ViewModel.addBinding
-        name: name
-        bind: -> "Y"
-      assert.equal 2, ViewModel.bindings[name].length
-      assert.equal "X", ViewModel.bindings[name][0].bind()
-      assert.equal "Y", ViewModel.bindings[name][1].bind()
+    it("adds the binding to @bindings array", function() {
+      const name = getBindingName();
+      ViewModel.addBinding({
+        name,
+        bind() { return "X"; }
+      });
+      ViewModel.addBinding({
+        name,
+        bind() { return "Y"; }
+      });
+      assert.equal(2, ViewModel.bindings[name].length);
+      assert.equal("X", ViewModel.bindings[name][0].bind());
+      return assert.equal("Y", ViewModel.bindings[name][1].bind());
+    });
 
-    it "adds default priority 1 to the binding", ->
-      name = getBindingName()
-      ViewModel.addBinding
-        name: name
-      assert.equal 1, ViewModel.bindings[name][0].priority
+    it("adds default priority 1 to the binding", function() {
+      const name = getBindingName();
+      ViewModel.addBinding({
+        name});
+      return assert.equal(1, ViewModel.bindings[name][0].priority);
+    });
 
-    it "adds priority 10 to the binding", ->
-      name = getBindingName()
-      ViewModel.addBinding
-        name: name
+    it("adds priority 10 to the binding", function() {
+      const name = getBindingName();
+      ViewModel.addBinding({
+        name,
         priority: 10
-      assert.equal 10, ViewModel.bindings[name][0].priority
+      });
+      return assert.equal(10, ViewModel.bindings[name][0].priority);
+    });
 
-    it "adds priority 2 with a selector", ->
-      name = getBindingName()
-      ViewModel.addBinding
-        name: name
+    it("adds priority 2 with a selector", function() {
+      const name = getBindingName();
+      ViewModel.addBinding({
+        name,
         selector: 'A'
-      assert.equal 2, ViewModel.bindings[name][0].priority
+      });
+      return assert.equal(2, ViewModel.bindings[name][0].priority);
+    });
 
-    it "adds priority 2 with a bindIf", ->
-      name = getBindingName()
-      ViewModel.addBinding
-        name: name
-        bindIf: ->
-      assert.equal 2, ViewModel.bindings[name][0].priority
+    it("adds priority 2 with a bindIf", function() {
+      const name = getBindingName();
+      ViewModel.addBinding({
+        name,
+        bindIf() {}
+      });
+      return assert.equal(2, ViewModel.bindings[name][0].priority);
+    });
 
-    it "adds priority 3 with a selector and bindIf", ->
-      name = getBindingName()
-      ViewModel.addBinding
-        name: name
-        selector: 'A'
-        bindIf: ->
-      assert.equal 3, ViewModel.bindings[name][0].priority
+    return it("adds priority 3 with a selector and bindIf", function() {
+      const name = getBindingName();
+      ViewModel.addBinding({
+        name,
+        selector: 'A',
+        bindIf() {}
+      });
+      return assert.equal(3, ViewModel.bindings[name][0].priority);
+    });
+  });
 
 
-  describe "@bindSingle", ->
+  describe("@bindSingle", function() {
 
-    beforeEach ->
-      @getBindArgumentStub = sinon.stub ViewModel, 'getBindArgument'
-      @getBindingStub = sinon.stub ViewModel, 'getBinding'
+    beforeEach(function() {
+      this.getBindArgumentStub = sinon.stub(ViewModel, 'getBindArgument');
+      return this.getBindingStub = sinon.stub(ViewModel, 'getBinding');
+    });
 
-    it "returns undefined", ->
-      @getBindingStub.returns
-        events: { a: 1 }
-      element =
-        bind: ->
-      ret = ViewModel.bindSingle(null, element)
-      assert.isUndefined ret
+    it("returns undefined", function() {
+      this.getBindingStub.returns({
+        events: { a: 1 }});
+      const element =
+        {bind() {}};
+      const ret = ViewModel.bindSingle(null, element);
+      return assert.isUndefined(ret);
+    });
 
-    it "uses getBindArgument", ->
+    it("uses getBindArgument", function() {
 
-      ViewModel.bindSingle 'templateInstance', 'element', 'bindName', 'bindValue', 'bindObject', 'viewmodel', 'bindingArray', 'bindId', 'view'
-      assert.isTrue @getBindArgumentStub.calledWithExactly 'templateInstance', 'element', 'bindName', 'bindValue', 'bindObject', 'viewmodel', 'bindId', 'view'
+      ViewModel.bindSingle('templateInstance', 'element', 'bindName', 'bindValue', 'bindObject', 'viewmodel', 'bindingArray', 'bindId', 'view');
+      return assert.isTrue(this.getBindArgumentStub.calledWithExactly('templateInstance', 'element', 'bindName', 'bindValue', 'bindObject', 'viewmodel', 'bindId', 'view'));
+    });
 
-    it "uses getBinding", ->
-      bindArg = {}
-      @getBindArgumentStub.returns bindArg
-      ViewModel.bindSingle 'templateInstance', 'element', 'bindName', 'bindValue', 'bindObject', 'viewmodel', 'bindingArray'
-      assert.isTrue @getBindingStub.calledWithExactly 'bindName', bindArg, 'bindingArray'
+    it("uses getBinding", function() {
+      const bindArg = {};
+      this.getBindArgumentStub.returns(bindArg);
+      ViewModel.bindSingle('templateInstance', 'element', 'bindName', 'bindValue', 'bindObject', 'viewmodel', 'bindingArray');
+      return assert.isTrue(this.getBindingStub.calledWithExactly('bindName', bindArg, 'bindingArray'));
+    });
 
-    it "executes autorun", ->
-      bindArg =
-        autorun: ->
-      @getBindArgumentStub.returns bindArg
-      spy = sinon.spy bindArg, 'autorun'
-      bindingAutorun = ->
-      @getBindingStub.returns
-        autorun: bindingAutorun
+    it("executes autorun", function() {
+      const bindArg =
+        {autorun() {}};
+      this.getBindArgumentStub.returns(bindArg);
+      const spy = sinon.spy(bindArg, 'autorun');
+      const bindingAutorun = function() {};
+      this.getBindingStub.returns({
+        autorun: bindingAutorun});
 
-      ViewModel.bindSingle()
-      assert.isTrue spy.calledWithExactly bindingAutorun
+      ViewModel.bindSingle();
+      return assert.isTrue(spy.calledWithExactly(bindingAutorun));
+    });
 
-    it "executes bind", ->
-      @getBindArgumentStub.returns 'X'
-      arg =
-        bind: ->
-      spy = sinon.spy arg, 'bind'
-      @getBindingStub.returns arg
+    it("executes bind", function() {
+      this.getBindArgumentStub.returns('X');
+      const arg =
+        {bind() {}};
+      const spy = sinon.spy(arg, 'bind');
+      this.getBindingStub.returns(arg);
 
-      ViewModel.bindSingle()
-      assert.isTrue spy.calledWithExactly 'X'
+      ViewModel.bindSingle();
+      return assert.isTrue(spy.calledWithExactly('X'));
+    });
 
-    it "binds events", ->
-      @getBindingStub.returns
-        events: { a: 1, b: 2 }
-      element =
-        bind: ->
-      spy = sinon.spy element, 'bind'
-      ViewModel.bindSingle(null, element)
-      assert.isTrue spy.calledTwice
-      assert.isTrue spy.calledWith 'a'
-      assert.isTrue spy.calledWith 'b'
+    return it("binds events", function() {
+      this.getBindingStub.returns({
+        events: { a: 1, b: 2 }});
+      const element =
+        {bind() {}};
+      const spy = sinon.spy(element, 'bind');
+      ViewModel.bindSingle(null, element);
+      assert.isTrue(spy.calledTwice);
+      assert.isTrue(spy.calledWith('a'));
+      return assert.isTrue(spy.calledWith('b'));
+    });
+  });
 
-  describe "@getBinding", ->
+  describe("@getBinding", function() {
 
-    it "returns default binding if can't find one", ->
-      bindName = 'default'
-      defaultB =
-        name: bindName
-      bindings = {}
-      bindings[bindName] = [defaultB]
+    it("returns default binding if can't find one", function() {
+      const bindName = 'default';
+      const defaultB =
+        {name: bindName};
+      const bindings = {};
+      bindings[bindName] = [defaultB];
 
-      ret = ViewModel.getBinding 'bindName', 'bindArg', bindings
-      assert.equal ret, defaultB
+      const ret = ViewModel.getBinding('bindName', 'bindArg', bindings);
+      return assert.equal(ret, defaultB);
+    });
 
-    it "returns first binding in one element array", ->
-      bindName = 'one'
-      oneBinding =
-        name: bindName
-      bindings = {}
-      bindings[bindName] = [oneBinding]
+    it("returns first binding in one element array", function() {
+      const bindName = 'one';
+      const oneBinding =
+        {name: bindName};
+      const bindings = {};
+      bindings[bindName] = [oneBinding];
 
-      ret = ViewModel.getBinding bindName, 'bindArg', bindings
-      assert.equal ret, oneBinding
+      const ret = ViewModel.getBinding(bindName, 'bindArg', bindings);
+      return assert.equal(ret, oneBinding);
+    });
 
-    it "returns default binding if can't find one that passes bindIf", ->
-      bindName = 'default'
-      defaultB =
-        name: bindName
-      bindings = {}
-      bindings[bindName] = [defaultB]
-      oneBinding =
-        name: 'none'
-        bindIf: -> false
-      bindings['none'] = [oneBinding]
+    it("returns default binding if can't find one that passes bindIf", function() {
+      const bindName = 'default';
+      const defaultB =
+        {name: bindName};
+      const bindings = {};
+      bindings[bindName] = [defaultB];
+      const oneBinding = {
+        name: 'none',
+        bindIf() { return false; }
+      };
+      bindings['none'] = [oneBinding];
 
-      ret = ViewModel.getBinding 'none', 'bindArg', bindings
-      assert.equal ret, defaultB
-      return
+      const ret = ViewModel.getBinding('none', 'bindArg', bindings);
+      assert.equal(ret, defaultB);
+    });
 
-    it "returns highest priority binding", ->
-      oneBinding =
-        name: 'X'
+    it("returns highest priority binding", function() {
+      const oneBinding = {
+        name: 'X',
         priority: 1
-      twoBinding =
-        name: 'X'
+      };
+      const twoBinding = {
+        name: 'X',
         priority: 2
-      bindings =
-        X: [oneBinding, twoBinding]
+      };
+      const bindings =
+        {X: [oneBinding, twoBinding]};
 
-      ret = ViewModel.getBinding 'X', 'bindArg', bindings
-      assert.equal ret, twoBinding
+      const ret = ViewModel.getBinding('X', 'bindArg', bindings);
+      return assert.equal(ret, twoBinding);
+    });
 
-    it "returns first that passes bindIf", ->
-      oneBinding =
-        name: 'X'
-        priority: 1
-        bindIf: -> false
-      twoBinding =
-        name: 'X'
-        priority: 1
-        bindIf: -> true
-      bindings =
-        X: [oneBinding, twoBinding]
+    it("returns first that passes bindIf", function() {
+      const oneBinding = {
+        name: 'X',
+        priority: 1,
+        bindIf() { return false; }
+      };
+      const twoBinding = {
+        name: 'X',
+        priority: 1,
+        bindIf() { return true; }
+      };
+      const bindings =
+        {X: [oneBinding, twoBinding]};
 
-      ret = ViewModel.getBinding 'X', 'bindArg', bindings
-      assert.equal ret, twoBinding
+      const ret = ViewModel.getBinding('X', 'bindArg', bindings);
+      return assert.equal(ret, twoBinding);
+    });
 
-    it "returns first that passes selector", ->
-      oneBinding =
-        name: 'X'
-        priority: 1
+    it("returns first that passes selector", function() {
+      const oneBinding = {
+        name: 'X',
+        priority: 1,
         selector: "A"
-      twoBinding =
-        name: 'X'
-        priority: 1
+      };
+      const twoBinding = {
+        name: 'X',
+        priority: 1,
         selector: "B"
-      bindings =
-        X: [oneBinding, twoBinding]
+      };
+      const bindings =
+        {X: [oneBinding, twoBinding]};
 
-      bindArg =
-        element:
-          is: (s) -> s is "B"
-      ret = ViewModel.getBinding 'X', bindArg, bindings
-      assert.equal ret, twoBinding
+      const bindArg = {
+        element: {
+          is(s) { return s === "B"; }
+        }
+      };
+      const ret = ViewModel.getBinding('X', bindArg, bindings);
+      return assert.equal(ret, twoBinding);
+    });
 
-    it "returns first that passes bindIf and selector", ->
-      oneBinding =
-        name: 'X'
-        priority: 1
-        selector: "B"
-        bindIf: -> false
-      twoBinding =
-        name: 'X'
-        priority: 1
-        selector: "B"
-        bindIf: -> true
-      bindings =
-        X: [oneBinding, twoBinding]
+    it("returns first that passes bindIf and selector", function() {
+      const oneBinding = {
+        name: 'X',
+        priority: 1,
+        selector: "B",
+        bindIf() { return false; }
+      };
+      const twoBinding = {
+        name: 'X',
+        priority: 1,
+        selector: "B",
+        bindIf() { return true; }
+      };
+      const bindings =
+        {X: [oneBinding, twoBinding]};
 
-      bindArg =
-        element:
-          is: (s) -> s is "B"
-      ret = ViewModel.getBinding 'X', bindArg, bindings
-      assert.equal ret, twoBinding
+      const bindArg = {
+        element: {
+          is(s) { return s === "B"; }
+        }
+      };
+      const ret = ViewModel.getBinding('X', bindArg, bindings);
+      return assert.equal(ret, twoBinding);
+    });
 
-    it "returns first that passes bindIf and selector with highest priority", ->
-      oneBinding =
-        name: 'X'
-        priority: 1
-        selector: "B"
-        bindIf: -> true
-      twoBinding =
-        name: 'X'
-        priority: 2
-        selector: "B"
-        bindIf: -> true
-      bindings =
-        X: [oneBinding, twoBinding]
+    return it("returns first that passes bindIf and selector with highest priority", function() {
+      const oneBinding = {
+        name: 'X',
+        priority: 1,
+        selector: "B",
+        bindIf() { return true; }
+      };
+      const twoBinding = {
+        name: 'X',
+        priority: 2,
+        selector: "B",
+        bindIf() { return true; }
+      };
+      const bindings =
+        {X: [oneBinding, twoBinding]};
 
-      bindArg =
-        element:
-          is: (s) -> s is "B"
-      ret = ViewModel.getBinding 'X', bindArg, bindings
-      assert.equal ret, twoBinding
+      const bindArg = {
+        element: {
+          is(s) { return s === "B"; }
+        }
+      };
+      const ret = ViewModel.getBinding('X', bindArg, bindings);
+      return assert.equal(ret, twoBinding);
+    });
+  });
 
-  describe "@getBindArgument", ->
+  describe("@getBindArgument", function() {
 
-    beforeEach ->
-      @getVmValueGetterStub = sinon.stub ViewModel, 'getVmValueGetter'
-      @getVmValueSetterStub = sinon.stub ViewModel, 'getVmValueSetter'
+    beforeEach(function() {
+      this.getVmValueGetterStub = sinon.stub(ViewModel, 'getVmValueGetter');
+      return this.getVmValueSetterStub = sinon.stub(ViewModel, 'getVmValueSetter');
+    });
 
-    it "returns right object", ->
-      ret = ViewModel.getBindArgument 'templateInstance', 'element', 'bindName', 'bindValue', 'bindObject', 'viewmodel'
-      ret = _.omit(ret, 'autorun', 'getVmValue', 'setVmValue')
-      expected =
-        templateInstance: 'templateInstance'
-        element: 'element'
-        elementBind: 'bindObject'
-        bindName: 'bindName'
-        bindValue: 'bindValue'
+    it("returns right object", function() {
+      let ret = ViewModel.getBindArgument('templateInstance', 'element', 'bindName', 'bindValue', 'bindObject', 'viewmodel');
+      ret = _.omit(ret, 'autorun', 'getVmValue', 'setVmValue');
+      const expected = {
+        templateInstance: 'templateInstance',
+        element: 'element',
+        elementBind: 'bindObject',
+        bindName: 'bindName',
+        bindValue: 'bindValue',
         viewmodel: 'viewmodel'
-      assert.isTrue _.isEqual(expected, ret)
+      };
+      return assert.isTrue(_.isEqual(expected, ret));
+    });
 
-    it "returns argument with autorun", ->
-      templateInstance =
-        autorun: ->
-      spy = sinon.spy templateInstance, 'autorun'
-      bindArg = ViewModel.getBindArgument templateInstance, 'element', 'bindName', 'bindValue', 'bindObject', 'viewmodel'
-      bindArg.autorun ->
-      assert.isTrue spy.calledOnce
+    it("returns argument with autorun", function() {
+      const templateInstance =
+        {autorun() {}};
+      const spy = sinon.spy(templateInstance, 'autorun');
+      const bindArg = ViewModel.getBindArgument(templateInstance, 'element', 'bindName', 'bindValue', 'bindObject', 'viewmodel');
+      bindArg.autorun(function() {});
+      return assert.isTrue(spy.calledOnce);
+    });
 
-    it "returns argument with vmValueGetter", ->
-      @getVmValueGetterStub.returns -> "A"
-      bindArg = ViewModel.getBindArgument 'templateInstance', 'element', 'bindName', 'bindValue', 'bindObject', 'viewmodel'
-      assert.equal "A", bindArg.getVmValue()
+    it("returns argument with vmValueGetter", function() {
+      this.getVmValueGetterStub.returns(() => "A");
+      const bindArg = ViewModel.getBindArgument('templateInstance', 'element', 'bindName', 'bindValue', 'bindObject', 'viewmodel');
+      return assert.equal("A", bindArg.getVmValue());
+    });
 
-    it "returns argument with vmValueSetter", ->
-      @getVmValueSetterStub.returns -> "A"
-      bindArg = ViewModel.getBindArgument 'templateInstance', 'element', 'bindName', 'bindValue', 'bindObject', 'viewmodel'
-      assert.equal "A", bindArg.setVmValue()
+    return it("returns argument with vmValueSetter", function() {
+      this.getVmValueSetterStub.returns(() => "A");
+      const bindArg = ViewModel.getBindArgument('templateInstance', 'element', 'bindName', 'bindValue', 'bindObject', 'viewmodel');
+      return assert.equal("A", bindArg.setVmValue());
+    });
+  });
 
-  describe "@getVmValueGetter", ->
+  describe("@getVmValueGetter", function() {
 
-    it "returns value from 1 + 'A'", ->
-      viewmodel = {}
-      bindValue = ViewModel.parseBind("x: 1 + 'A'").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal "1A", getVmValue()
+    it("returns value from 1 + 'A'", function() {
+      const viewmodel = {};
+      const bindValue = ViewModel.parseBind("x: 1 + 'A'").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      return assert.equal("1A", getVmValue());
+    });
 
-    it "returns value from name", ->
-      viewmodel =
-        name: -> "A"
-      bindValue = 'name'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal "A", getVmValue()
+    it("returns value from name", function() {
+      const viewmodel =
+        {name() { return "A"; }};
+      const bindValue = 'name';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      return assert.equal("A", getVmValue());
+    });
 
-    it "returns short circuits false && true", ->
-      called = false
-      viewmodel =
-        a: -> false
-        b: ->
-          called = true
-          true
-      bindValue = "a && b"
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal false, getVmValue()
-      assert.equal false, called
+    it("returns short circuits false && true", function() {
+      let called = false;
+      const viewmodel = {
+        a() { return false; },
+        b() {
+          called = true;
+          return true;
+        }
+      };
+      const bindValue = "a && b";
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.equal(false, getVmValue());
+      return assert.equal(false, called);
+    });
 
-    it "returns short circuits true || false", ->
-      called = false
-      viewmodel =
-        a: -> true
-        b: ->
-          called = true
-          true
-      bindValue = "a || b"
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal true, getVmValue()
-      assert.equal false, called
+    it("returns short circuits true || false", function() {
+      let called = false;
+      const viewmodel = {
+        a() { return true; },
+        b() {
+          called = true;
+          return true;
+        }
+      };
+      const bindValue = "a || b";
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.equal(true, getVmValue());
+      return assert.equal(false, called);
+    });
 
-    it "returns value from call(1, -2)", ->
-      viewmodel =
-        call: (a, b) -> b
-      bindValue = "call(1, -2)"
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal -2, getVmValue()
+    it("returns value from call(1, -2)", function() {
+      const viewmodel =
+        {call(a, b) { return b; }};
+      const bindValue = "call(1, -2)";
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      return assert.equal(-2, getVmValue());
+    });
 
-    it "returns value from call(1 - 2)", ->
-      viewmodel =
-        call: (a) -> a
-      bindValue = "call(1 - 2)"
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal -1, getVmValue()
+    it("returns value from call(1 - 2)", function() {
+      const viewmodel =
+        {call(a) { return a; }};
+      const bindValue = "call(1 - 2)";
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      return assert.equal(-1, getVmValue());
+    });
 
-    it "returns value from call(1, 1 - 2)", ->
-      viewmodel =
-        call: (a, b) -> b
-      bindValue = "call(1, 1 - 2)"
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal -1, getVmValue()
+    it("returns value from call(1, 1 - 2)", function() {
+      const viewmodel =
+        {call(a, b) { return b; }};
+      const bindValue = "call(1, 1 - 2)";
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      return assert.equal(-1, getVmValue());
+    });
 
-    it "returns value from name(address.zip)", ->
-      viewmodel =
-        name: (val) -> val is 100
-        address:
+    it("returns value from name(address.zip)", function() {
+      const viewmodel = {
+        name(val) { return val === 100; },
+        address: {
           zip: 100
-      bindValue = 'name(address.zip)'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isTrue getVmValue()
-      return
+        }
+      };
+      const bindValue = 'name(address.zip)';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.isTrue(getVmValue());
+    });
 
-    it "returns false from !'A'", ->
-      viewmodel =
-        name: -> "A"
-      bindValue = '!name'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal false, getVmValue()
+    it("returns false from !'A'", function() {
+      const viewmodel =
+        {name() { return "A"; }};
+      const bindValue = '!name';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      return assert.equal(false, getVmValue());
+    });
 
-    it "returns value from name.first (first is prop)", ->
-      viewmodel =
-        name: ->
-          first: "A"
-      bindValue = 'name.first'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal "A", getVmValue()
-      return
+    it("returns value from name.first (first is prop)", function() {
+      const viewmodel = {
+        name() {
+          return {first: "A"};
+        }
+      };
+      const bindValue = 'name.first';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.equal("A", getVmValue());
+    });
 
-    it "returns value from name.first (first is func)", ->
-      viewmodel =
-        name: ->
-          first: -> "A"
-      bindValue = 'name.first'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal "A", getVmValue()
+    it("returns value from name.first (first is func)", function() {
+      const viewmodel = {
+        name() {
+          return {first() { return "A"; }};
+        }
+      };
+      const bindValue = 'name.first';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      return assert.equal("A", getVmValue());
+    });
 
-    it "returns value from name()", ->
-      viewmodel =
-        name: -> "A"
-      bindValue = 'name()'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal "A", getVmValue()
+    it("returns value from name()", function() {
+      const viewmodel =
+        {name() { return "A"; }};
+      const bindValue = 'name()';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      return assert.equal("A", getVmValue());
+    });
 
-    it "doesn't give arguments to name()", ->
-      viewmodel =
-        name: -> arguments.length
-      bindValue = 'name()'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal 0, getVmValue()
+    it("doesn't give arguments to name()", function() {
+      const viewmodel =
+        {name() { return arguments.length; }};
+      const bindValue = 'name()';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      return assert.equal(0, getVmValue());
+    });
 
-    it "returns value from name('a')", ->
-      viewmodel =
-        name: (a) -> a
-      bindValue = "name('a')"
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal "a", getVmValue()
+    it("returns value from name('a')", function() {
+      const viewmodel =
+        {name(a) { return a; }};
+      const bindValue = "name('a')";
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      return assert.equal("a", getVmValue());
+    });
 
-    it "returns value from name('a', 1)", ->
-      viewmodel =
-        name: (a, b) -> a + b
-      bindValue = "name('a', 1)"
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal "a1", getVmValue()
-      return
+    it("returns value from name('a', 1)", function() {
+      const viewmodel =
+        {name(a, b) { return a + b; }};
+      const bindValue = "name('a', 1)";
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.equal("a1", getVmValue());
+    });
 
-    it "returns value from name(first) with string", ->
-      viewmodel =
-        name: (v) -> v
-        first: -> "A"
-      bindValue = 'name(first)'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal "A", getVmValue()
+    it("returns value from name(first) with string", function() {
+      const viewmodel = {
+        name(v) { return v; },
+        first() { return "A"; }
+      };
+      const bindValue = 'name(first)';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      return assert.equal("A", getVmValue());
+    });
 
-    it "returns value from name(first, second)", ->
-      viewmodel =
-        name: (a, b) -> a + b
-        first: -> "A"
-        second: -> "B"
-      bindValue = 'name(first, second)'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal "AB", getVmValue()
+    it("returns value from name(first, second)", function() {
+      const viewmodel = {
+        name(a, b) { return a + b; },
+        first() { return "A"; },
+        second() { return "B"; }
+      };
+      const bindValue = 'name(first, second)';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      return assert.equal("AB", getVmValue());
+    });
 
-    it "returns value from name(first, second) with numbers", ->
-      viewmodel =
-        name: (a, b) -> a + b
-        first: -> 1
-        second: -> 2
-      bindValue = 'name(first, second)'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal 3, getVmValue()
+    it("returns value from name(first, second) with numbers", function() {
+      const viewmodel = {
+        name(a, b) { return a + b; },
+        first() { return 1; },
+        second() { return 2; }
+      };
+      const bindValue = 'name(first, second)';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      return assert.equal(3, getVmValue());
+    });
 
-    it "returns value from name(first, second) with booleans", ->
-      viewmodel =
-        name: (a, b) -> a or b
-        first: -> false
-        second: -> true
-      bindValue = 'name(first, second)'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isTrue getVmValue()
+    it("returns value from name(first, second) with booleans", function() {
+      const viewmodel = {
+        name(a, b) { return a || b; },
+        first() { return false; },
+        second() { return true; }
+      };
+      const bindValue = 'name(first, second)';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      return assert.isTrue(getVmValue());
+    });
 
-    it "returns value from name(first) with null", ->
-      viewmodel =
-        name: (a) -> a
-        first: -> null
-      bindValue = 'name(first)'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isNull getVmValue()
+    it("returns value from name(first) with null", function() {
+      const viewmodel = {
+        name(a) { return a; },
+        first() { return null; }
+      };
+      const bindValue = 'name(first)';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      return assert.isNull(getVmValue());
+    });
 
-    it "returns value from name(first) with undefined", ->
-      viewmodel =
-        name: (a) -> a
-        first: -> undefined
-      bindValue = 'name(first)'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isUndefined getVmValue()
+    it("returns value from name(first) with undefined", function() {
+      const viewmodel = {
+        name(a) { return a; },
+        first() { return undefined; }
+      };
+      const bindValue = 'name(first)';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      return assert.isUndefined(getVmValue());
+    });
 
-    it "returns value from name(1, 2)", ->
-      viewmodel =
-        name: (a, b) -> a + b
-      bindValue = 'name(1, 2)'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal 3, getVmValue()
+    it("returns value from name(1, 2)", function() {
+      const viewmodel =
+        {name(a, b) { return a + b; }};
+      const bindValue = 'name(1, 2)';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      return assert.equal(3, getVmValue());
+    });
 
-    it "returns value from name(false, true)", ->
-      viewmodel =
-        name: (a, b) -> a or b
-      bindValue = 'name(false, true)'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isTrue getVmValue()
+    it("returns value from name(false, true)", function() {
+      const viewmodel =
+        {name(a, b) { return a || b; }};
+      const bindValue = 'name(false, true)';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      return assert.isTrue(getVmValue());
+    });
 
-    it "returns value from name(null)", ->
-      viewmodel =
-        name: (a) -> a
-      bindValue = 'name(null)'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isNull getVmValue()
+    it("returns value from name(null)", function() {
+      const viewmodel =
+        {name(a) { return a; }};
+      const bindValue = 'name(null)';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      return assert.isNull(getVmValue());
+    });
 
-    it "returns value from name(undefined)", ->
-      viewmodel =
-        name: (a) -> a
-      bindValue = 'name(undefined)'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isUndefined getVmValue()
+    it("returns value from name(undefined)", function() {
+      const viewmodel =
+        {name(a) { return a; }};
+      const bindValue = 'name(undefined)';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      return assert.isUndefined(getVmValue());
+    });
 
-    it "returns value from name(!first, !second) with booleans", ->
-      viewmodel =
-        name: (a, b) -> a and b
-        first: -> false
-        second: -> false
-      bindValue = 'name(!first, !second)'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isTrue getVmValue()
+    it("returns value from name(!first, !second) with booleans", function() {
+      const viewmodel = {
+        name(a, b) { return a && b; },
+        first() { return false; },
+        second() { return false; }
+      };
+      const bindValue = 'name(!first, !second)';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      return assert.isTrue(getVmValue());
+    });
 
-    it "returns value from name().first (first is prop)", ->
-      viewmodel =
-        name: ->
-          first: "A"
-      bindValue = 'name.first'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal "A", getVmValue()
+    it("returns value from name().first (first is prop)", function() {
+      const viewmodel = {
+        name() {
+          return {first: "A"};
+        }
+      };
+      const bindValue = 'name.first';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      return assert.equal("A", getVmValue());
+    });
 
-    it "returns value from name().first (first is func)", ->
-      viewmodel =
-        name: ->
-          first: -> "A"
-      bindValue = 'name.first'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal "A", getVmValue()
+    it("returns value from name().first (first is func)", function() {
+      const viewmodel = {
+        name() {
+          return {first() { return "A"; }};
+        }
+      };
+      const bindValue = 'name.first';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      return assert.equal("A", getVmValue());
+    });
 
-    it "returns value from name(1).first (first is prop)", ->
-      viewmodel =
-        name: (v) ->
-          if v is 1
-            first: "A"
-      bindValue = 'name(1).first'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal "A", getVmValue()
-      return
+    it("returns value from name(1).first (first is prop)", function() {
+      const viewmodel = {
+        name(v) {
+          if (v === 1) {
+            return {first: "A"};
+          }
+        }
+      };
+      const bindValue = 'name(1).first';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.equal("A", getVmValue());
+    });
 
-    it "returns value from name(1)", ->
-      viewmodel =
-        name: (a) -> a
-      bindValue = 'name(1)'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isTrue 1 is getVmValue()
+    it("returns value from name(1)", function() {
+      const viewmodel =
+        {name(a) { return a; }};
+      const bindValue = 'name(1)';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      return assert.isTrue(1 === getVmValue());
+    });
 
-    it "returns value from name().first()", ->
-      viewmodel =
-        name: ->
-          first: -> "A"
-      bindValue = 'name().first()'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal "A", getVmValue()
+    it("returns value from name().first()", function() {
+      const viewmodel = {
+        name() {
+          return {first() { return "A"; }};
+        }
+      };
+      const bindValue = 'name().first()';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      return assert.equal("A", getVmValue());
+    });
 
 
-    it "returns value from name().first.second", ->
-      viewmodel =
-        name: ->
-          first:
-            second: "A"
-      bindValue = 'name().first.second'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal "A", getVmValue()
+    it("returns value from name().first.second", function() {
+      const viewmodel = {
+        name() {
+          return {
+            first: {
+              second: "A"
+            }
+          };
+        }
+      };
+      const bindValue = 'name().first.second';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      return assert.equal("A", getVmValue());
+    });
 
-    it "returns value from name().first.second()", ->
-      viewmodel =
-        name: ->
-          first:
-            second: -> "A"
-      bindValue = 'name().first.second()'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal "A", getVmValue()
+    it("returns value from name().first.second()", function() {
+      const viewmodel = {
+        name() {
+          return {
+            first: {
+              second() { return "A"; }
+            }
+          };
+        }
+      };
+      const bindValue = 'name().first.second()';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      return assert.equal("A", getVmValue());
+    });
 
-    it "returns value from name().first.second()", ->
-      viewmodel =
-        name: ->
-          first:
-            second: -> "A"
-      bindValue = 'name().first.second()'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal "A", getVmValue()
+    it("returns value from name().first.second()", function() {
+      const viewmodel = {
+        name() {
+          return {
+            first: {
+              second() { return "A"; }
+            }
+          };
+        }
+      };
+      const bindValue = 'name().first.second()';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      return assert.equal("A", getVmValue());
+    });
 
-    it "returns value from first + second", ->
-      viewmodel =
-        first: 1
+    it("returns value from first + second", function() {
+      const viewmodel = {
+        first: 1,
         second: 2
-      bindValue = ViewModel.parseBind("x: first + second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal 3, getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: first + second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.equal(3, getVmValue());
+    });
 
-    it "returns value from first + ' - ' + second", ->
-      viewmodel =
-        first: 1
+    it("returns value from first + ' - ' + second", function() {
+      const viewmodel = {
+        first: 1,
         second: 2
-      bindValue = ViewModel.parseBind("x: first + ' - ' + second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal "1 - 2", getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: first + ' - ' + second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.equal("1 - 2", getVmValue());
+    });
 
-    it "returns value from first + second", ->
-      viewmodel =
-        first: 1
+    it("returns value from first + second", function() {
+      const viewmodel = {
+        first: 1,
         second: 2
-      bindValue = ViewModel.parseBind("x: first + second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal 3, getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: first + second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.equal(3, getVmValue());
+    });
 
-    it "returns value from first - second", ->
-      viewmodel =
-        first: 3
+    it("returns value from first - second", function() {
+      const viewmodel = {
+        first: 3,
         second: 2
-      bindValue = ViewModel.parseBind("x: first - second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal 1, getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: first - second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.equal(1, getVmValue());
+    });
 
-    it "returns value from first * second", ->
-      viewmodel =
-        first: 3
+    it("returns value from first * second", function() {
+      const viewmodel = {
+        first: 3,
         second: 2
-      bindValue = ViewModel.parseBind("x: first * second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal 6, getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: first * second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.equal(6, getVmValue());
+    });
 
-    it "returns value from first / second", ->
-      viewmodel =
-        first: 6
+    it("returns value from first / second", function() {
+      const viewmodel = {
+        first: 6,
         second: 2
-      bindValue = ViewModel.parseBind("x: first / second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal 3, getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: first / second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.equal(3, getVmValue());
+    });
 
-    it "returns value from first && second", ->
-      viewmodel =
-        first: true
+    it("returns value from first && second", function() {
+      const viewmodel = {
+        first: true,
         second: true
-      bindValue = ViewModel.parseBind("x: first && second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isTrue getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: first && second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.isTrue(getVmValue());
+    });
 
-    it "returns value from first || second", ->
-      viewmodel =
-        first: false
+    it("returns value from first || second", function() {
+      const viewmodel = {
+        first: false,
         second: true
-      bindValue = ViewModel.parseBind("x: first || second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isTrue getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: first || second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.isTrue(getVmValue());
+    });
 
-    it "returns value from first == second", ->
-      viewmodel =
-        first: 1
+    it("returns value from first == second", function() {
+      const viewmodel = {
+        first: 1,
         second: '1'
-      bindValue = ViewModel.parseBind("x: first == second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isTrue getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: first == second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.isTrue(getVmValue());
+    });
 
-    it "returns value from first === second", ->
-      viewmodel =
-        first: 1
+    it("returns value from first === second", function() {
+      const viewmodel = {
+        first: 1,
         second: 1
-      bindValue = ViewModel.parseBind("x: first === second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isTrue getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: first === second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.isTrue(getVmValue());
+    });
 
-    it "returns value from first !== second", ->
-      viewmodel =
-        first: 1
+    it("returns value from first !== second", function() {
+      const viewmodel = {
+        first: 1,
         second: 1
-      bindValue = ViewModel.parseBind("x: first !== second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isFalse getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: first !== second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.isFalse(getVmValue());
+    });
 
-    it "returns value from first !=== second", ->
-      viewmodel =
-        first: 1
+    it("returns value from first !=== second", function() {
+      const viewmodel = {
+        first: 1,
         second: 1
-      bindValue = ViewModel.parseBind("x: first !=== second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isFalse getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: first !=== second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.isFalse(getVmValue());
+    });
 
-    it "returns value from first > second", ->
-      viewmodel =
-        first: 1
+    it("returns value from first > second", function() {
+      const viewmodel = {
+        first: 1,
         second: 0
-      bindValue = ViewModel.parseBind("x: first > second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isTrue getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: first > second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.isTrue(getVmValue());
+    });
 
-    it "returns value from first > second", ->
-      viewmodel =
-        first: 1
+    it("returns value from first > second", function() {
+      const viewmodel = {
+        first: 1,
         second: 1
-      bindValue = ViewModel.parseBind("x: first > second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isFalse getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: first > second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.isFalse(getVmValue());
+    });
 
-    it "returns value from first > second", ->
-      viewmodel =
-        first: 1
+    it("returns value from first > second", function() {
+      const viewmodel = {
+        first: 1,
         second: 2
-      bindValue = ViewModel.parseBind("x: first > second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isFalse getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: first > second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.isFalse(getVmValue());
+    });
 
-    it "returns value from first >= second", ->
-      viewmodel =
-        first: 1
+    it("returns value from first >= second", function() {
+      const viewmodel = {
+        first: 1,
         second: 0
-      bindValue = ViewModel.parseBind("x: first >= second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isTrue getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: first >= second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.isTrue(getVmValue());
+    });
 
-    it "returns value from first >= second", ->
-      viewmodel =
-        first: 1
+    it("returns value from first >= second", function() {
+      const viewmodel = {
+        first: 1,
         second: 1
-      bindValue = ViewModel.parseBind("x: first >= second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isTrue getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: first >= second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.isTrue(getVmValue());
+    });
 
-    it "returns value from first >= second", ->
-      viewmodel =
-        first: 1
+    it("returns value from first >= second", function() {
+      const viewmodel = {
+        first: 1,
         second: 2
-      bindValue = ViewModel.parseBind("x: first >= second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isFalse getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: first >= second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.isFalse(getVmValue());
+    });
 
-    it "returns value from first < second", ->
-      viewmodel =
-        first: 1
+    it("returns value from first < second", function() {
+      const viewmodel = {
+        first: 1,
         second: 0
-      bindValue = ViewModel.parseBind("x: first < second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isFalse getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: first < second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.isFalse(getVmValue());
+    });
 
-    it "returns value from first < second", ->
-      viewmodel =
-        first: 1
+    it("returns value from first < second", function() {
+      const viewmodel = {
+        first: 1,
         second: 1
-      bindValue = ViewModel.parseBind("x: first < second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isFalse getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: first < second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.isFalse(getVmValue());
+    });
 
-    it "returns value from first < second", ->
-      viewmodel =
-        first: 1
+    it("returns value from first < second", function() {
+      const viewmodel = {
+        first: 1,
         second: 2
-      bindValue = ViewModel.parseBind("x: first < second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isTrue getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: first < second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.isTrue(getVmValue());
+    });
 
-    it "returns value from first <= second", ->
-      viewmodel =
-        first: 1
+    it("returns value from first <= second", function() {
+      const viewmodel = {
+        first: 1,
         second: 0
-      bindValue = ViewModel.parseBind("x: first <= second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isFalse getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: first <= second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.isFalse(getVmValue());
+    });
 
-    it "returns value from first <= second", ->
-      viewmodel =
-        first: 1
+    it("returns value from first <= second", function() {
+      const viewmodel = {
+        first: 1,
         second: 1
-      bindValue = ViewModel.parseBind("x: first <= second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isTrue getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: first <= second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.isTrue(getVmValue());
+    });
 
-    it "returns value from first <= second", ->
-      viewmodel =
-        first: 1
+    it("returns value from first <= second", function() {
+      const viewmodel = {
+        first: 1,
         second: 2
-      bindValue = ViewModel.parseBind("x: first <= second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isTrue getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: first <= second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.isTrue(getVmValue());
+    });
 
-    it "returns value from first(1.1)", ->
-      viewmodel =
-        first: (v) -> v
-      bindValue = 'first(1.1)'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal 1.1, getVmValue()
-      return
+    it("returns value from first(1.1)", function() {
+      const viewmodel =
+        {first(v) { return v; }};
+      const bindValue = 'first(1.1)';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.equal(1.1, getVmValue());
+    });
 
-    it "returns value from first1.second", ->
-      viewmodel =
-        first1:
+    it("returns value from first1.second", function() {
+      const viewmodel = {
+        first1: {
           second: 2
-      bindValue = 'first1.second'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal 2, getVmValue()
-      return
+        }
+      };
+      const bindValue = 'first1.second';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.equal(2, getVmValue());
+    });
 
-    it "returns value from first.1second", ->
-      viewmodel =
-        first:
+    it("returns value from first.1second", function() {
+      const viewmodel = {
+        first: {
           '1second': 2
-      bindValue = 'first.1second'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal 2, getVmValue()
-      return
+        }
+      };
+      const bindValue = 'first.1second';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.equal(2, getVmValue());
+    });
 
-    it "returns value from first(this)", ->
-      instance =
-        data:
+    it("returns value from first(this)", function() {
+      const instance = {
+        data: {
           a: 1
-      stub = sinon.stub Template, 'instance'
-      stub.returns instance
-      viewmodel =
-        first: (ins) -> ins.a is 1
-      bindValue = 'first(this)'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isTrue getVmValue()
-      return
+        }
+      };
+      const stub = sinon.stub(Template, 'instance');
+      stub.returns(instance);
+      const viewmodel =
+        {first(ins) { return ins.a === 1; }};
+      const bindValue = 'first(this)';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.isTrue(getVmValue());
+    });
 
-    it "returns value from first(this.a)", ->
-      instance =
-        data:
+    it("returns value from first(this.a)", function() {
+      const instance = {
+        data: {
           a: 1
-      stub = sinon.stub Template, 'instance'
-      stub.returns instance
-      viewmodel =
-        first: (ins) -> ins is 1
-      bindValue = 'first(this.a)'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isTrue getVmValue()
-      return
+        }
+      };
+      const stub = sinon.stub(Template, 'instance');
+      stub.returns(instance);
+      const viewmodel =
+        {first(ins) { return ins === 1; }};
+      const bindValue = 'first(this.a)';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.isTrue(getVmValue());
+    });
 
-    it "returns value from parent.first", ->
-      viewmodel =
-        name: -> 'A'
-        parent: ->
-          val = this.name()
-          first: val
-      bindValue = 'parent.first'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal 'A', getVmValue()
-      return
+    it("returns value from parent.first", function() {
+      const viewmodel = {
+        name() { return 'A'; },
+        parent() {
+          const val = this.name();
+          return {first: val};
+        }
+      };
+      const bindValue = 'parent.first';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.equal('A', getVmValue());
+    });
 
-    it "creates property on view model", ->
-      viewmodel = new ViewModel()
-      bindValue = 'name'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isUndefined getVmValue()
-      assert.ok viewmodel.name
-      return
+    it("creates property on view model", function() {
+      const viewmodel = new ViewModel();
+      const bindValue = 'name';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.isUndefined(getVmValue());
+      assert.ok(viewmodel.name);
+    });
 
-    it "returns quoted string", ->
-      viewmodel = {}
-      bindValue = '"Hi"'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal 'Hi', getVmValue()
-      return
+    it("returns quoted string", function() {
+      const viewmodel = {};
+      const bindValue = '"Hi"';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.equal('Hi', getVmValue());
+    });
 
-    it "returns single quoted string", ->
-      viewmodel = {}
-      bindValue = "'Hi'"
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal 'Hi', getVmValue()
-      return
+    it("returns single quoted string", function() {
+      const viewmodel = {};
+      const bindValue = "'Hi'";
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.equal('Hi', getVmValue());
+    });
 
-    it "returns value from parent.first.second", ->
-      viewmodel =
-        parent:
-          first:
+    it("returns value from parent.first.second", function() {
+      const viewmodel = {
+        parent: {
+          first: {
             second: 'A'
-      bindValue = 'parent.first.second'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal 'A', getVmValue()
-      return
+          }
+        }
+      };
+      const bindValue = 'parent.first.second';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.equal('A', getVmValue());
+    });
 
-    it "returns value from parent.first(second)", ->
-      parent = new ViewModel()
-      parent.first = (v) -> v is 'A'
-      viewmodel = new ViewModel()
-      viewmodel.second = 'A'
-      viewmodel.parent = parent
+    it("returns value from parent.first(second)", function() {
+      const parent = new ViewModel();
+      parent.first = v => v === 'A';
+      const viewmodel = new ViewModel();
+      viewmodel.second = 'A';
+      viewmodel.parent = parent;
 
-      bindValue = 'parent.first(second)'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isTrue getVmValue()
-      return
+      const bindValue = 'parent.first(second)';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.isTrue(getVmValue());
+    });
 
-    it "returns value from first( second )", ->
-      viewmodel = new ViewModel()
-      viewmodel.load
-        first: (v) -> v
+    it("returns value from first( second )", function() {
+      const viewmodel = new ViewModel();
+      viewmodel.load({
+        first(v) { return v; },
         second: 'A'
-      bindValue = 'first( second )'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal 'A', getVmValue()
-      return
+      });
+      const bindValue = 'first( second )';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.equal('A', getVmValue());
+    });
 
-    it "returns value from first( second , third )", ->
-      viewmodel = new ViewModel()
-      viewmodel.load
-        first: (a, b) -> a + b
-        second: 'A'
+    it("returns value from first( second , third )", function() {
+      const viewmodel = new ViewModel();
+      viewmodel.load({
+        first(a, b) { return a + b; },
+        second: 'A',
         third: 'B'
-      bindValue = 'first( second , third )'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal 'AB', getVmValue()
-      return
+      });
+      const bindValue = 'first( second , third )';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.equal('AB', getVmValue());
+    });
 
-    it "returns value from !first && second", ->
-      viewmodel =
-        first: true
+    it("returns value from !first && second", function() {
+      const viewmodel = {
+        first: true,
         second: true
-      bindValue = ViewModel.parseBind("x: !first && second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isFalse getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: !first && second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.isFalse(getVmValue());
+    });
 
-    it "returns value from !first && second _2", ->
-      viewmodel =
-        first: false
+    it("returns value from !first && second _2", function() {
+      const viewmodel = {
+        first: false,
         second: true
-      bindValue = ViewModel.parseBind("x: !first && second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isTrue getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: !first && second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.isTrue(getVmValue());
+    });
 
-    it "returns value from !first && second _3", ->
-      viewmodel =
-        first: false
+    it("returns value from !first && second _3", function() {
+      const viewmodel = {
+        first: false,
         second: false
-      bindValue = ViewModel.parseBind("x: !first && second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isFalse getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: !first && second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.isFalse(getVmValue());
+    });
 
-    it "returns value from !first || second", ->
-      viewmodel =
-        first: false
+    it("returns value from !first || second", function() {
+      const viewmodel = {
+        first: false,
         second: true
-      bindValue = ViewModel.parseBind("x: !first || second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isTrue getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: !first || second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.isTrue(getVmValue());
+    });
 
-    it "returns value from !first || second _2", ->
-      viewmodel =
-        first: true
+    it("returns value from !first || second _2", function() {
+      const viewmodel = {
+        first: true,
         second: false
-      bindValue = ViewModel.parseBind("x: !first || second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isFalse getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: !first || second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.isFalse(getVmValue());
+    });
 
-    it "returns value from !first || second _3", ->
-      viewmodel =
-        first: true
+    it("returns value from !first || second _3", function() {
+      const viewmodel = {
+        first: true,
         second: true
-      bindValue = ViewModel.parseBind("x: !first || second").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.isTrue getVmValue()
-      return
+      };
+      const bindValue = ViewModel.parseBind("x: !first || second").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.isTrue(getVmValue());
+    });
 
-    it "returns value from 2**3", ->
-      viewmodel = {}
-      bindValue = ViewModel.parseBind("x: 2**3").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal getVmValue(), 8
-      return
+    it("returns value from 2**3", function() {
+      const viewmodel = {};
+      const bindValue = ViewModel.parseBind("x: 2**3").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.equal(getVmValue(), 8);
+    });
 
-    it "returns value from 9%4", ->
-      viewmodel = {}
-      bindValue = ViewModel.parseBind("x: 9%4").x
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal getVmValue(), 1
-      return
+    return it("returns value from 9%4", function() {
+      const viewmodel = {};
+      const bindValue = ViewModel.parseBind("x: 9%4").x;
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.equal(getVmValue(), 1);
+    });
+  });
 
-  describe "@getVmValueSetter", ->
+  describe("@getVmValueSetter", function() {
 
-    it "sets first && second", ->
-      firstVal = null
-      secondVal = null
-      viewmodel =
-        first: (v) -> firstVal = v
-        second: (v) -> secondVal = v
-      bindValue = 'first && second'
-      setVmValue = ViewModel.getVmValueSetter(viewmodel, bindValue)
-      setVmValue(2)
-      assert.equal 2, firstVal
-      assert.equal 2, secondVal
-      return
+    it("sets first && second", function() {
+      let firstVal = null;
+      let secondVal = null;
+      const viewmodel = {
+        first(v) { return firstVal = v; },
+        second(v) { return secondVal = v; }
+      };
+      const bindValue = 'first && second';
+      const setVmValue = ViewModel.getVmValueSetter(viewmodel, bindValue);
+      setVmValue(2);
+      assert.equal(2, firstVal);
+      assert.equal(2, secondVal);
+    });
 
-    it "sets first func", ->
-      val = null
-      viewmodel =
-        first: (v) -> val = v
-      bindValue = 'first'
-      setVmValue = ViewModel.getVmValueSetter(viewmodel, bindValue)
-      setVmValue(2)
-      assert.equal 2, val
-      return
+    it("sets first func", function() {
+      let val = null;
+      const viewmodel =
+        {first(v) { return val = v; }};
+      const bindValue = 'first';
+      const setVmValue = ViewModel.getVmValueSetter(viewmodel, bindValue);
+      setVmValue(2);
+      assert.equal(2, val);
+    });
 
-    it "sets first(true)", ->
-      val = null
-      viewmodel =
-        first: (v) -> val = v
-      bindValue = 'first(true)'
-      setVmValue = ViewModel.getVmValueSetter(viewmodel, bindValue)
-      setVmValue(2)
-      assert.isTrue val
-      return
+    it("sets first(true)", function() {
+      let val = null;
+      const viewmodel =
+        {first(v) { return val = v; }};
+      const bindValue = 'first(true)';
+      const setVmValue = ViewModel.getVmValueSetter(viewmodel, bindValue);
+      setVmValue(2);
+      assert.isTrue(val);
+    });
 
-    it "sets first(second)", ->
-      val = null
-      viewmodel =
-        first: (v) -> val = v
+    it("sets first(second)", function() {
+      let val = null;
+      const viewmodel = {
+        first(v) { return val = v; },
         second: 2
-      bindValue = 'first(second)'
-      setVmValue = ViewModel.getVmValueSetter(viewmodel, bindValue)
-      setVmValue()
-      assert.equal val , 2
-      return
+      };
+      const bindValue = 'first(second)';
+      const setVmValue = ViewModel.getVmValueSetter(viewmodel, bindValue);
+      setVmValue();
+      assert.equal(val , 2);
+    });
 
-    it "sets first(second) with event", ->
-      val = null
-      evt = null
-      viewmodel =
-        first: (v, e) -> 
-          val = v
-          evt = e
+    it("sets first(second) with event", function() {
+      let val = null;
+      let evt = null;
+      const viewmodel = {
+        first(v, e) { 
+          val = v;
+          return evt = e;
+        },
         second: 2
-      bindValue = 'first(second)'
-      setVmValue = ViewModel.getVmValueSetter(viewmodel, bindValue)
-      setVmValue(3)
-      assert.equal val , 2
-      assert.equal evt , 3
-      return
+      };
+      const bindValue = 'first(second)';
+      const setVmValue = ViewModel.getVmValueSetter(viewmodel, bindValue);
+      setVmValue(3);
+      assert.equal(val , 2);
+      assert.equal(evt , 3);
+    });
 
-    it "works with sub properties", ->
-      viewmodel =
-        formData: 
+    it("works with sub properties", function() {
+      const viewmodel = {
+        formData: { 
           position: ""
-      bindValue = 'formData.position'
-      getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue)
-      assert.equal getVmValue() , ""
-      return
+        }
+      };
+      const bindValue = 'formData.position';
+      const getVmValue = ViewModel.getVmValueGetter(viewmodel, bindValue);
+      assert.equal(getVmValue() , "");
+    });
 
-    it "doesn't do anything if bindValue isn't a string", ->
-      val = null
-      viewmodel =
-        first: (v) -> val = v
-      setVmValue = ViewModel.getVmValueSetter(viewmodel, {})
-      setVmValue(2)
-      return
+    it("doesn't do anything if bindValue isn't a string", function() {
+      let val = null;
+      const viewmodel =
+        {first(v) { return val = v; }};
+      const setVmValue = ViewModel.getVmValueSetter(viewmodel, {});
+      setVmValue(2);
+    });
 
-    it "sets first prop", ->
-      viewmodel =
-        first: 1
-      bindValue = 'first'
-      setVmValue = ViewModel.getVmValueSetter(viewmodel, bindValue)
-      setVmValue(2)
-      assert.equal 2, viewmodel.first
-      return
+    it("sets first prop", function() {
+      const viewmodel =
+        {first: 1};
+      const bindValue = 'first';
+      const setVmValue = ViewModel.getVmValueSetter(viewmodel, bindValue);
+      setVmValue(2);
+      assert.equal(2, viewmodel.first);
+    });
 
-    it "sets first.second func.func", ->
-      val = null
-      viewmodel =
-        first: ->
-          second: (v) -> val = v
-      bindValue = 'first.second'
-      setVmValue = ViewModel.getVmValueSetter(viewmodel, bindValue)
-      setVmValue(2)
-      assert.equal 2, val
-      return
+    it("sets first.second func.func", function() {
+      let val = null;
+      const viewmodel = {
+        first() {
+          return {second(v) { return val = v; }};
+        }
+      };
+      const bindValue = 'first.second';
+      const setVmValue = ViewModel.getVmValueSetter(viewmodel, bindValue);
+      setVmValue(2);
+      assert.equal(2, val);
+    });
 
-    it "sets first().second func.func", ->
-      val = null
-      viewmodel =
-        first: ->
-          second: (v) -> val = v
-      bindValue = 'first().second'
-      setVmValue = ViewModel.getVmValueSetter(viewmodel, bindValue)
-      setVmValue(2)
-      assert.equal 2, val
-      return
+    it("sets first().second func.func", function() {
+      let val = null;
+      const viewmodel = {
+        first() {
+          return {second(v) { return val = v; }};
+        }
+      };
+      const bindValue = 'first().second';
+      const setVmValue = ViewModel.getVmValueSetter(viewmodel, bindValue);
+      setVmValue(2);
+      assert.equal(2, val);
+    });
 
-    it "sets first.second.third p.p.p", ->
-      viewmodel =
-        first:
-          second:
+    return it("sets first.second.third p.p.p", function() {
+      const viewmodel = {
+        first: {
+          second: {
             third: false
-      bindValue = 'first.second.third'
-      setVmValue = ViewModel.getVmValueSetter(viewmodel, bindValue)
-      setVmValue(true)
-      assert.isTrue viewmodel.first.second.third
-      return
+          }
+        }
+      };
+      const bindValue = 'first.second.third';
+      const setVmValue = ViewModel.getVmValueSetter(viewmodel, bindValue);
+      setVmValue(true);
+      assert.isTrue(viewmodel.first.second.third);
+    });
+  });
 
-  describe "@addEmptyViewModel", ->
+  describe("@addEmptyViewModel", () => it("adds a view model to the template instance", function() {
+    let context = null;
+    let onViewDestroyedCalled = false;
+    const f = function() {
+      return context = this;
+    };
+    const onCreatedStub = sinon.stub(ViewModel, 'onCreated');
+    onCreatedStub.returns(f);
+    const vm = new ViewModel();
+    vm.vmInitial = {};
+    const templateInstance = {
+      viewmodel: vm,
+      view: {
+        onViewDestroyed() { return onViewDestroyedCalled = true; },
+        template: {}
+      }
+    };
+    ViewModel.addEmptyViewModel(templateInstance);
+    assert.equal(context, templateInstance);
+    return assert.isTrue(onViewDestroyedCalled);
+  }));
 
-    it "adds a view model to the template instance", ->
-      context = null
-      onViewDestroyedCalled = false
-      f = ->
-        context = this
-      onCreatedStub = sinon.stub ViewModel, 'onCreated'
-      onCreatedStub.returns f
-      vm = new ViewModel()
-      vm.vmInitial = {}
-      templateInstance =
-        viewmodel: vm
-        view:
-          onViewDestroyed: -> onViewDestroyedCalled = true
-          template: {}
-      ViewModel.addEmptyViewModel(templateInstance)
-      assert.equal context, templateInstance
-      assert.isTrue onViewDestroyedCalled
+  describe("@parentTemplate", function() {
 
-  describe "@parentTemplate", ->
+    it("returns undefined if it doesn't have a parent view", function() {
+      const templateInstance =
+        {view: {}};
+      const parent = ViewModel.parentTemplate(templateInstance);
+      return assert.isUndefined(parent);
+    });
 
-    it "returns undefined if it doesn't have a parent view", ->
-      templateInstance =
-        view: {}
-      parent = ViewModel.parentTemplate templateInstance
-      assert.isUndefined parent
-
-    it "returns undefined if parent view isn't a template", ->
-      templateInstance =
-        view:
-          parentView:
+    it("returns undefined if parent view isn't a template", function() {
+      const templateInstance = {
+        view: {
+          parentView: {
             name: 'X'
-      parent = ViewModel.parentTemplate templateInstance
-      assert.isUndefined parent
+          }
+        }
+      };
+      const parent = ViewModel.parentTemplate(templateInstance);
+      return assert.isUndefined(parent);
+    });
 
-    it "returns template instance if parent view is a template", ->
-      templateInstance =
-        view:
-          parentView:
-            name: 'Template.A'
-            templateInstance: -> "X"
-      parent = ViewModel.parentTemplate templateInstance
-      assert.equal "X", parent
+    it("returns template instance if parent view is a template", function() {
+      const templateInstance = {
+        view: {
+          parentView: {
+            name: 'Template.A',
+            templateInstance() { return "X"; }
+          }
+        }
+      };
+      const parent = ViewModel.parentTemplate(templateInstance);
+      return assert.equal("X", parent);
+    });
 
-    it "returns template instance if parent view is body", ->
-      templateInstance =
-        view:
-          parentView:
-            name: 'body'
-            templateInstance: -> "X"
-      parent = ViewModel.parentTemplate templateInstance
-      assert.equal "X", parent
+    return it("returns template instance if parent view is body", function() {
+      const templateInstance = {
+        view: {
+          parentView: {
+            name: 'body',
+            templateInstance() { return "X"; }
+          }
+        }
+      };
+      const parent = ViewModel.parentTemplate(templateInstance);
+      return assert.equal("X", parent);
+    });
+  });
 
-  describe "@assignChild", ->
+  describe("@assignChild", function() {
 
-    it "adds viewmodel to children", ->
-      arr = []
-      vm =
-        parent: ->
-          children: -> arr
-      ViewModel.assignChild vm
-      assert.equal 1, arr.length
-      assert.equal vm, arr[0]
+    it("adds viewmodel to children", function() {
+      const arr = [];
+      const vm = {
+        parent() {
+          return {children() { return arr; }};
+        }
+      };
+      ViewModel.assignChild(vm);
+      assert.equal(1, arr.length);
+      return assert.equal(vm, arr[0]);
+  });
 
-    it "doesn't do anything without a parent template", ->
-      vm =
-        parent: ->
-      ViewModel.assignChild vm
+    return it("doesn't do anything without a parent template", function() {
+      const vm =
+        {parent() {}};
+      return ViewModel.assignChild(vm);
+    });
+  });
 
-  describe "@templateName", ->
-    it "returns body if the template is the body", ->
-      name = ViewModel.templateName
-        view:
+  describe("@templateName", function() {
+    it("returns body if the template is the body", function() {
+      const name = ViewModel.templateName({
+        view: {
           name: 'body'
-      assert.equal 'body', name
+        }
+      });
+      return assert.equal('body', name);
+    });
 
-    it "returns name of the template", ->
-      name = ViewModel.templateName
-        view:
+    return it("returns name of the template", function() {
+      const name = ViewModel.templateName({
+        view: {
           name: 'Template.mine'
-      assert.equal 'mine', name
+        }
+      });
+      return assert.equal('mine', name);
+    });
+  });
 
-  describe "@find", ->
-    before ->
-      ViewModel.byId = {}
-      ViewModel.byTemplate = {}
-      @vm1 = new ViewModel
-        name: 'A'
+  return describe("@find", function() {
+    before(function() {
+      ViewModel.byId = {};
+      ViewModel.byTemplate = {};
+      this.vm1 = new ViewModel({
+        name: 'A',
         age: 2
-      @vm1.templateInstance =
-        view:
+      });
+      this.vm1.templateInstance = {
+        view: {
           name: 'Template.X'
-      ViewModel.add @vm1
-      @vm2 = new ViewModel
-        name: 'B'
+        }
+      };
+      ViewModel.add(this.vm1);
+      this.vm2 = new ViewModel({
+        name: 'B',
         age: 1
-      @vm2.templateInstance =
-        view:
+      });
+      this.vm2.templateInstance = {
+        view: {
           name: 'Template.X'
-      ViewModel.add @vm2
-      @vm3 = new ViewModel
-        name: 'C'
+        }
+      };
+      ViewModel.add(this.vm2);
+      this.vm3 = new ViewModel({
+        name: 'C',
         age: 1
-      @vm3.templateInstance =
-        view:
+      });
+      this.vm3.templateInstance = {
+        view: {
           name: 'Template.Y'
-      ViewModel.add @vm3
+        }
+      };
+      return ViewModel.add(this.vm3);
+    });
 
 
-    it "returns all without parameters", ->
-      vms = ViewModel.find()
-      assert.isTrue vms instanceof Array
-      assert.equal 3, vms.length
-      assert.equal @vm1, vms[0]
-      assert.equal @vm2, vms[1]
-      assert.equal @vm3, vms[2]
+    it("returns all without parameters", function() {
+      const vms = ViewModel.find();
+      assert.isTrue(vms instanceof Array);
+      assert.equal(3, vms.length);
+      assert.equal(this.vm1, vms[0]);
+      assert.equal(this.vm2, vms[1]);
+      return assert.equal(this.vm3, vms[2]);
+  });
 
-    it "returns all for template X", ->
-      vms = ViewModel.find('X')
-      assert.isTrue vms instanceof Array
-      assert.equal 2, vms.length
-      assert.equal @vm1, vms[0]
-      assert.equal @vm2, vms[1]
+    it("returns all for template X", function() {
+      const vms = ViewModel.find('X');
+      assert.isTrue(vms instanceof Array);
+      assert.equal(2, vms.length);
+      assert.equal(this.vm1, vms[0]);
+      return assert.equal(this.vm2, vms[1]);
+  });
 
-    it "returns all for template X with a predicate", ->
-      vms = ViewModel.find('X', (vm) -> vm.name() is 'B')
-      assert.isTrue vms instanceof Array
-      assert.equal 1, vms.length
-      assert.equal @vm2, vms[0]
+    it("returns all for template X with a predicate", function() {
+      const vms = ViewModel.find('X', vm => vm.name() === 'B');
+      assert.isTrue(vms instanceof Array);
+      assert.equal(1, vms.length);
+      return assert.equal(this.vm2, vms[0]);
+  });
 
-    it "returns all for a predicate", ->
-      vms = ViewModel.find((vm) -> vm.age() is 1)
-      assert.isTrue vms instanceof Array
-      assert.equal 2, vms.length
-      assert.equal @vm2, vms[0]
-      assert.equal @vm3, vms[1]
+    it("returns all for a predicate", function() {
+      const vms = ViewModel.find(vm => vm.age() === 1);
+      assert.isTrue(vms instanceof Array);
+      assert.equal(2, vms.length);
+      assert.equal(this.vm2, vms[0]);
+      return assert.equal(this.vm3, vms[1]);
+  });
 
-    describe "@findOne", ->
+    return describe("@findOne", function() {
 
-      it "returns first one without params", ->
-        vm = ViewModel.findOne()
-        assert.equal @vm1, vm
+      it("returns first one without params", function() {
+        const vm = ViewModel.findOne();
+        return assert.equal(this.vm1, vm);
+      });
 
-      it "returns first for template X", ->
-        vm = ViewModel.findOne('X')
-        assert.equal @vm1, vm
+      it("returns first for template X", function() {
+        const vm = ViewModel.findOne('X');
+        return assert.equal(this.vm1, vm);
+      });
 
-      it "returns first for template X with predicate", ->
-        vm = ViewModel.findOne('X', (vm) -> vm.name() is 'B')
-        assert.equal @vm2, vm
+      it("returns first for template X with predicate", function() {
+        const vm = ViewModel.findOne('X', vm => vm.name() === 'B');
+        return assert.equal(this.vm2, vm);
+      });
 
-      it "returns first with predicate", ->
-        vm = ViewModel.findOne((vm) -> vm.age() is 1)
-        assert.equal @vm2, vm
+      return it("returns first with predicate", function() {
+        const vm = ViewModel.findOne(vm => vm.age() === 1);
+        return assert.equal(this.vm2, vm);
+      });
+    });
+  });
+});
