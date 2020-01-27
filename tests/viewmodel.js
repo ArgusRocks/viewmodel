@@ -407,12 +407,12 @@ describe("ViewModel", function() {
     const getBindingName = () => "test" + last++;
 
     it("checks the arguments", function() {
-      ViewModel.addBinding("X");
-      assert.isTrue(this.checkStub.calledWithExactly('@addBinding', "X"));
+      ViewModel.addBinding({ name: "X" });
+      assert.isTrue(this.checkStub.calledWithMatch('@addBinding', { name: "X" }));
     });
 
     it("returns nothing", function() {
-      const ret = ViewModel.addBinding("X");
+      const ret = ViewModel.addBinding({ name: "X" });
       assert.isUndefined(ret);
     });
 
