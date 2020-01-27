@@ -1,3 +1,23 @@
+# Important update
+
+This is a forked and _decaffeinated_ version of [ViewModel](https://github.com/ManuelDeLeon/viewmodel) by [Manuel De Leon](https://github.com/ManuelDeLeon).
+
+Changes so far:
+
+- [x] Transpiled to JS with Decaffeinate
+- [x] Switched `cultofcoders:mocha` to `meteortesting:mocha`
+- [x] Update `chai` and `sinon` dependencies
+- [x] Package renamed to `arggh:viewmodel`
+- [x] Version bumped to `7.0.0` (though not published yet)
+- [x] Removed unnecessary return statements
+- [x] Fixed some broken tests
+
+Contributions are very welcome:
+
+- [ ] Combing through the transpiled code and applying suggestions by Decaffeinate
+- [ ] Fixing weird code created in the transpilation process
+- [ ] Performance improvements!
+
 # ViewModel
 ## A new level of simplicity
 

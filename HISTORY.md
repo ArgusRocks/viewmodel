@@ -1,4 +1,9 @@
-﻿## 6.3.8
+﻿## next
+- Convert to JS
+- Fix tests
+- Update chai and sinon
+
+## 6.3.8
 
 - Fix issue when getting/setting values in nested properties.
 
