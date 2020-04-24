@@ -1,3 +1,6 @@
+import sinon from 'sinon';
+
+// @TODO: This feels quite hacky.
 if (!sinon.patched) {
   sinon.patched = true;
   sinon.____originalStub = sinon.stub;

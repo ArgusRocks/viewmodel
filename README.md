@@ -1,3 +1,23 @@
+# Important update
+
+This is a forked and _decaffeinated_ version of [ViewModel](https://github.com/ManuelDeLeon/viewmodel) by [Manuel De Leon](https://github.com/ManuelDeLeon).
+
+Changes so far:
+
+- [x] Transpiled to JS with Decaffeinate
+- [x] Switched `cultofcoders:mocha` to `meteortesting:mocha`
+- [x] Update `chai` and `sinon` dependencies
+- [x] Package renamed to `arggh:viewmodel`
+- [x] Version bumped to `7.0.0` (though not published yet)
+- [x] Removed unnecessary return statements
+- [x] Fixed some broken tests
+
+Contributions are very welcome:
+
+- [ ] Combing through the transpiled code and applying suggestions by Decaffeinate
+- [ ] Fixing weird code created in the transpilation process
+- [ ] Performance improvements!
+
 # ViewModel
 ## A new level of simplicity
 
@@ -14,17 +34,17 @@ Here are some things it can do to make your life easier:
 - [Inline/scoped styles][7]
 - [Better error messages][8]
 
-Go to [viewmodel.meteor.com][9] for examples and full documentation.
+Go to [viewmodel.org][9] for examples and full documentation.
 
 Go to the [help section][10] if you have any questions, comments, feedback, or just want to talk about anything related to ViewModel and Meteor.
 
-[1]:https://viewmodel.meteor.com/docs#comparison
-[2]:https://viewmodel.meteor.com/docs/misc#hotcodepush
-[3]:https://viewmodel.meteor.com/docs/misc#stateonurl
-[4]:https://viewmodel.meteor.com/docs/misc#controls
-[5]:https://viewmodel.meteor.com/docs/viewmodels#share
-[6]:https://viewmodel.meteor.com/docs/viewmodels#mixin
-[7]:https://viewmodel.meteor.com/docs/misc#inlinestyles
-[8]:https://viewmodel.meteor.com/docs/misc#bettererrors
-[9]:http://viewmodel.meteor.com/
-[10]:http://viewmodelboard.meteor.com/
+[1]:https://viewmodel.org/docs#comparison
+[2]:https://viewmodel.org/docs/misc#hotcodepush
+[3]:https://viewmodel.org/docs/misc#stateonurl
+[4]:https://viewmodel.org/docs/misc#controls
+[5]:https://viewmodel.org/docs/viewmodels#share
+[6]:https://viewmodel.org/docs/viewmodels#mixin
+[7]:https://viewmodel.org/docs/misc#inlinestyles
+[8]:https://viewmodel.org/docs/misc#bettererrors
+[9]:https://viewmodel.org/
+[10]:https://viewmodel.org/help

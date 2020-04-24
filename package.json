@@ -1,0 +1,23 @@
+{
+  "name": "viewmodel",
+  "version": "7.0.0",
+  "description": "ViewModel is a view layer for Meteor. You can think of it as Angular, Knockout, Aurelia, Vue, etc. but without the boilerplate code required to make those work.",
+  "main": "package.js",
+  "scripts": {
+    "test": "meteor test-packages ./ --driver-package meteortesting:mocha --port 4000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arggh/viewmodel.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/arggh/viewmodel/issues"
+  },
+  "homepage": "https://github.com/arggh/viewmodel#readme",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "sinon": "^8.1.1"
+  }
+}
